@@ -1,0 +1,130 @@
+﻿@model IEnumerable<InscripcionMaterias.Models.Materium>
+
+@{
+    ViewData["Title"] = "Materias";
+}
+
+<h1>Materias</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Nueva Materia</h6>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FirstOrDefault().Nombre" class="control-label">Nombre</label>
+                                <input name="Nombre" class="form-control" />
+                                <span asp-validation-for="FirstOrDefault().Nombre" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FirstOrDefault().Codigo" class="control-label">Código</label>
+                                <input name="Codigo" class="form-control" />
+                                <span asp-validation-for="FirstOrDefault().Codigo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FirstOrDefault().UnidadesValorativas" class="control-label">Unidades valorativas</label>
+                                <input name="UnidadesValorativas" class="form-control" />
+                                <span asp-validation-for="FirstOrDefault().UnidadesValorativas" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Guardar" class="btn btn-success" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4" id="materiasTablaContainer">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Listado de Materias</h6>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Cargar la tabla de materias al cargar la página
+            $.ajax({
+                url: '/Materiums/MateriasTabla',
+                type: 'GET',
+                success: function (data) {
+                    $('#materiasTablaContainer').html(data);
+                    $('#dataTable').DataTable(); // Inicializar DataTables después de cargar la tabla
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error al cargar la tabla de materias:', error);
+                    $('#materiasTablaContainer').html('<p>Error al cargar la tabla de materias.</p>'); // Mostrar un mensaje de error
+                }
+            });
+        });
+
+        function confirmDelete(id, nombre) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: `¿Deseas eliminar la materia: ${nombre}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/Materiums/Delete/${id}`,
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire(
+                                    '¡Eliminado!',
+                                    'La materia ha sido eliminada.',
+                                    'success'
+                                ).then(() => {
+                                    // Recargar la tabla con AJAX en lugar de la página completa
+                                    $.ajax({
+                                        url: '/Materiums/MateriasTabla',
+                                        type: 'GET',
+                                        success: function (data) {
+                                            $('#materiasTablaContainer').html(data);
+                                            $('#dataTable').DataTable(); // Re-inicializar DataTables
+                                        },
+                                        error: function (error) {
+                                             console.error('Error al recargar la tabla:', error);
+                                             $('#materiasTablaContainer').html('<p>Error al cargar la tabla de materias.</p>');
+                                        }
+                                    });
+                                });
+                            } else {
+                                Swal.fire(
+                                    '¡Error!',
+                                    'No se pudo eliminar la materia: ' + response.message,
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire(
+                                '¡Error!',
+                                'Ocurrió un error al eliminar la materia: ' + error,
+                                'error'
+                            );
+                        }
+                    });
+                }
+            })
+        }
+    </script>
+}
