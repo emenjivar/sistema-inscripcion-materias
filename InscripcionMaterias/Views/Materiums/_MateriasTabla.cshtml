@@ -33,9 +33,10 @@
                             @Html.DisplayFor(modelItem => item.UnidadesValorativas)
                         </td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id" title="Editar" class="mr-3">
-                                <i class="fa fa-edit fa-lg"></i>
-                            </a>
+                            <button class="btn btn-sm btn-primary" title="Editar" onclick="editarMateria(@item.Id)">
+                                <i class="fa fa-edit"></i>
+                            </button>
+
                             <a href="#" onclick="confirmDelete('@item.Id', '@item.Nombre')">
                                 <i class="fa fa-trash fa-lg"></i>
                             </a>
@@ -45,4 +46,4 @@
             </tbody>
         </table>
     </div>
-</div>
+</div>            

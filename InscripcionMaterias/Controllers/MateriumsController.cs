@@ -71,55 +71,38 @@ namespace InscripcionMaterias.Controllers
         }
 
         // GET: Materiums/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
+            var materia = await _context.Materia.FindAsync(id);
+            if (materia == null)
                 return NotFound();
-            }
 
-            var materium = await _context.Materia.FindAsync(id);
-            if (materium == null)
-            {
-                return NotFound();
-            }
-            return View(materium);
+            return PartialView("Edit", materia);
         }
+
 
         // POST: Materiums/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Codigo,Nombre,UnidadesValorativas,Descripcion")] Materium materium)
+        public async Task<IActionResult> Edit(Materium materium)
         {
-            if (id != materium.Id)
-            {
-                return NotFound();
-            }
+            if (!ModelState.IsValid)
+                return Json(new { success = false, message = "Datos inválidos." });
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(materium);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MateriumExists(materium.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(materium);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true });
             }
-            return View(materium);
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
+
 
         // POST: Materiums/Delete/5
         [HttpDelete]
