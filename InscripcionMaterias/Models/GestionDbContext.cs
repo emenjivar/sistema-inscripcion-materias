@@ -41,11 +41,11 @@ public partial class GestionDbContext : DbContext
     {
         modelBuilder.Entity<Alumno>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__alumno__3213E83FDAD70B62");
+            entity.HasKey(e => e.Id).HasName("PK__alumno__3213E83FF66165BE");
 
             entity.ToTable("alumno");
 
-            entity.HasIndex(e => e.Carnet, "UQ__alumno__4CDEAA6E0A9E5965").IsUnique();
+            entity.HasIndex(e => e.Carnet, "UQ__alumno__4CDEAA6E6C44F43D").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Carnet)
@@ -65,7 +65,7 @@ public partial class GestionDbContext : DbContext
 
         modelBuilder.Entity<BloqueHorarioMaterial>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__bloque_h__3213E83FD0055E47");
+            entity.HasKey(e => e.Id).HasName("PK__bloque_h__3213E83FCA800064");
 
             entity.ToTable("bloque_horario_material");
 
@@ -98,7 +98,7 @@ public partial class GestionDbContext : DbContext
 
         modelBuilder.Entity<GrupoClase>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__grupo_cl__3213E83F9E84C72C");
+            entity.HasKey(e => e.Id).HasName("PK__grupo_cl__3213E83F5A21C3EC");
 
             entity.ToTable("grupo_clase");
 
@@ -111,7 +111,7 @@ public partial class GestionDbContext : DbContext
 
         modelBuilder.Entity<Inscripcion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__inscripc__3213E83F1FC8D0EB");
+            entity.HasKey(e => e.Id).HasName("PK__inscripc__3213E83FAE8E7BCB");
 
             entity.ToTable("inscripcion");
 
@@ -132,7 +132,7 @@ public partial class GestionDbContext : DbContext
 
         modelBuilder.Entity<InscripcionAlumno>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__inscripc__3213E83F1867A0A8");
+            entity.HasKey(e => e.Id).HasName("PK__inscripc__3213E83F6DF8BC18");
 
             entity.ToTable("inscripcion_alumno");
 
@@ -153,11 +153,11 @@ public partial class GestionDbContext : DbContext
 
         modelBuilder.Entity<Materium>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__materia__3213E83F07CB7262");
+            entity.HasKey(e => e.Id).HasName("PK__materia__3213E83FF61BBFC7");
 
             entity.ToTable("materia");
 
-            entity.HasIndex(e => e.Codigo, "UQ__materia__40F9A206B55D6F38").IsUnique();
+            entity.HasIndex(e => e.Codigo, "UQ__materia__40F9A206F1298D82").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Codigo)
@@ -177,7 +177,7 @@ public partial class GestionDbContext : DbContext
 
         modelBuilder.Entity<Pensum>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__pensum__3213E83F782AF481");
+            entity.HasKey(e => e.Id).HasName("PK__pensum__3213E83FF4EB8029");
 
             entity.ToTable("pensum");
 
@@ -186,11 +186,14 @@ public partial class GestionDbContext : DbContext
                 .HasMaxLength(60)
                 .IsUnicode(false)
                 .HasColumnName("carrera");
+            entity.Property(e => e.Estado)
+                .HasDefaultValue(true)
+                .HasColumnName("estado");
         });
 
         modelBuilder.Entity<PensumMateria>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__pensum_m__3213E83FD8638B44");
+            entity.HasKey(e => e.Id).HasName("PK__pensum_m__3213E83FF430791A");
 
             entity.ToTable("pensum_materias");
 
@@ -217,7 +220,7 @@ public partial class GestionDbContext : DbContext
 
         modelBuilder.Entity<ResultadoCicloAcademico>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__resultad__3213E83F69A20A50");
+            entity.HasKey(e => e.Id).HasName("PK__resultad__3213E83FD3252EF0");
 
             entity.ToTable("resultado_ciclo_academico");
 

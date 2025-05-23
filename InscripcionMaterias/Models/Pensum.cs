@@ -9,6 +9,8 @@ public partial class Pensum
 
     public string Carrera { get; set; } = null!;
 
+    public bool Estado { get; set; }  = true;
+
     public virtual ICollection<Alumno> Alumnos { get; set; } = new List<Alumno>();
 
     public virtual ICollection<Inscripcion> Inscripcions { get; set; } = new List<Inscripcion>();
