@@ -151,5 +151,12 @@ namespace InscripcionMaterias.Controllers
         {
             return _context.Pensums.Any(e => e.Id == id);
         }
+
+
+        public IActionResult ConfigurarMaterias(int id)
+        {
+            // Redirige hacia el controlador PensumMaterias, acción Index o Configurar, con parámetro id
+            return RedirectToAction("_ConfigurarMaterias", "PensumMaterias", new { id = id });
+        }
     }
 }

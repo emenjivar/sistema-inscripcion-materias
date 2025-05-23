@@ -124,5 +124,7 @@ namespace InscripcionMaterias.Controllers
         {
             return _context.Materia.Any(e => e.Id == id);
         }
+
+
     }
 }

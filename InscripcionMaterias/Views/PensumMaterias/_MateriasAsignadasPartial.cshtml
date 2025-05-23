@@ -1,0 +1,37 @@
+﻿@model List<InscripcionMaterias.Models.PensumMateria>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm rounded-3 border border-secondary-subtle">
+                <div class="card-header position-relative d-flex justify-content-between align-items-center py-2 px-3">
+                    <!-- Icono X a la izquierda -->
+                    <a href="#" class="btn-eliminar text-danger fs-4 fw-bold text-decoration-none"
+                       data-id="@item.Id" title="Eliminar" style="line-height: 1; cursor:pointer;">
+                        &times;
+                    </a>
+
+                    <!-- Código a la derecha -->
+                    <strong class="text-secondary fst-italic" style="font-size: 0.85rem;">
+                        @item.IdMateriaNavigation.Codigo
+                    </strong>
+                </div>
+
+                <!-- Nombre centrado -->
+                <div class="card-body d-flex justify-content-center align-items-center py-3 ">
+                    <h6 class="card-title text-center mb-0 fw-semibold">
+                        @item.IdMateriaNavigation.Nombre
+                    </h6>
+                </div>
+
+
+                <!-- Pie de tarjeta con UV a la izquierda y guion a la derecha -->
+                <div class="card-footer d-flex justify-content-between text-muted small py-2 px-3">
+                    <span>@item.IdMateriaNavigation.UnidadesValorativas UV</span>
+                    <span class="fw-bold">-</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>

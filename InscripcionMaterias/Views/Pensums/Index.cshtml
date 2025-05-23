@@ -46,6 +46,15 @@
     </div>
 </div>
 
+<div class="modal fade" id="configurarMateriasModal" tabindex="-1" role="dialog" aria-labelledby="configurarMateriasModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <!-- Aquí cargaremos el formulario -->
+        </div>
+    </div>
+</div>
+
+
 @section Scripts {
     <script>
         $(document).ready(function () {
@@ -129,5 +138,20 @@
                 }
             });
         }
+
+                function abrirConfigurarMaterias(pensumId) {
+            $.ajax({
+                url: '/Pensums/ConfigurarMaterias/' + pensumId,
+                type: 'GET',
+                success: function (html) {
+                    $('#configurarMateriasModal .modal-content').html(html);
+                    $('#configurarMateriasModal').modal('show');
+                },
+                error: function () {
+                    Swal.fire('Error', 'No se pudo cargar la configuración de materias.', 'error');
+                }
+            });
+        }
+
     </script>
 }
