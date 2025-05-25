@@ -253,3 +253,148 @@ insert into materia(id, codigo, nombre, unidades_valorativas, descripcion)
 values (45, 'COIDS4504', 'Direccion de comportamiento humano en el ambiente laboral', 3, '');
 SET IDENTITY_INSERT materia OFF
 
+--- Pensum
+-- ciclo I
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 1, null, 1);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 2, null, 1);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 3, null, 1);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 4, null, 1);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 5, null, 1);
+
+-- ciclo II
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 6, 1, 2);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 7, 2, 2);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 8, null, 2);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 9, 1, 2);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 10, 5, 2);
+
+-- ciclo III
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 11, 6, 3);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 12, 7, 3);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 13, 10, 3);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 14, 1, 3);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 15, 10, 3);
+
+-- ciclo IV
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 16, 11, 4);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 17, 12, 4);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 18, null, 4);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 19, null, 4);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 20, 15, 4);
+
+-- ciclo V
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 21, null, 5);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 22, 1, 5);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 23, 18, 5);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 24, null, 5);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 25, null, 5);
+
+-- ciclo VI
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 26, null, 6);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 27, 23, 6);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 28, 24, 6);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 29, 25, 6);
+
+-- ciclo VII
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 30, null, 7);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 31, 25, 7);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 32, null, 7);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 33, 20, 7);
+
+-- ciclo VIII
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 34, null, 8);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 35, 20, 8);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 36, 29, 8);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 37, 33, 8);
+
+-- ciclo IX
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 38, 26, 9);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 39, 35, 9);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 40, 36, 9);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 41, null, 9);
+
+-- ciclo X
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 42, null, 10);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 43, null, 10);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 44, null, 10);
+
+insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
+values (1, 45, null, 10);
