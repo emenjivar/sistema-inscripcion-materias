@@ -107,6 +107,9 @@ insert into pensum(id, carrera) values (1, 'Ingenieria en sistemas');
 SET IDENTITY_INSERT pensum OFF
 GO
 
+ALTER TABLE pensum
+ADD estado BIT default 1;
+GO
 -- Materias disponibles para poder armar los pensum
 SET IDENTITY_INSERT materia ON
 -- ciclo I
