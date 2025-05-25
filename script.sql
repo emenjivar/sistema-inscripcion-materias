@@ -6,7 +6,7 @@ GO
 
 CREATE TABLE pensum(
     id INT PRIMARY KEY IDENTITY(1,1),
-    carrera VARCHAR(60) NOT NULL
+    carrera VARCHAR(256) NOT NULL
 );
 
 CREATE TABLE materia(
