@@ -127,5 +127,53 @@
             });
         });
 
+            function confirmDelete(e, id) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: '¿Deseas eliminar esta materia del pensum?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/PensumMaterias/Delete/${id}`,
+                        type: 'POST',
+                        headers: { 'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val() },
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire('Eliminado', 'La materia fue eliminada del pensum.', 'success')
+                                    .then(() => location.reload()); // Puedes reemplazar reload por llamada AJAX si no quieres recargar
+                            } else {
+                                Swal.fire('Error', response.message, 'error');
+                            }
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'Ocurrió un error al intentar eliminar.', 'error');
+                        }
+                    });
+                }
+            });
+        }
+
+        // Si necesitas esta función, defínela así:
+        function attachDeleteHandlers() {
+            $('.btn-eliminar').off('click').on('click', function (e) {
+                const id = $(this).data('id');
+                confirmDelete(e, id);
+            });
+        }
+
+        // Llamarla si estás cargando contenido por AJAX:
+        $(document).ready(function () {
+            attachDeleteHandlers();
+        });
+
+
     </script>
 }

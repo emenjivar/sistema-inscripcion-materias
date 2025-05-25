@@ -191,40 +191,21 @@ namespace InscripcionMaterias.Controllers
             return View(pensumMateria);
         }
 
-        // GET: PensumMaterias/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var pensumMateria = await _context.PensumMaterias
-                .Include(p => p.IdMateriaNavigation)
-                .Include(p => p.IdMateriaPrerequisitoNavigation)
-                .Include(p => p.IdPensumNavigation)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (pensumMateria == null)
-            {
-                return NotFound();
-            }
-
-            return View(pensumMateria);
-        }
-
         // POST: PensumMaterias/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var pensumMateria = await _context.PensumMaterias.FindAsync(id);
-            if (pensumMateria != null)
+            var materiaPensum = await _context.PensumMaterias.FindAsync(id);
+            if (materiaPensum == null)
             {
-                _context.PensumMaterias.Remove(pensumMateria);
+                return Json(new { success = false, message = "No se encontró la relación materia-pensum." });
             }
 
+            _context.PensumMaterias.Remove(materiaPensum);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return Json(new { success = true });
         }
 
         private bool PensumMateriaExists(int id)
