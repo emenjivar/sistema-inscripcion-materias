@@ -361,6 +361,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-
-# Agregando archivo a ignorar para no cambiar el Nombre de servidor de cada compu
-Models/GestionDbContext.cs
