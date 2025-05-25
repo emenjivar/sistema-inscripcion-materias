@@ -48,12 +48,6 @@ namespace InscripcionMaterias.Controllers
             return View(materium);
         }
 
-        // GET: Materiums/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         // POST: Materiums/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -67,7 +61,10 @@ namespace InscripcionMaterias.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(materium);
+
+            // Retorna la vista Index con el modelo actual para mostrar errores
+            var materias = await _context.Materia.ToListAsync();
+            return View("Index", materias);
         }
 
         // GET: Materiums/Edit/5
