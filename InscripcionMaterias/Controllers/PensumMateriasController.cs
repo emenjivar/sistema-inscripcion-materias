@@ -48,7 +48,9 @@ namespace InscripcionMaterias.Controllers
             ViewBag.IdPensum = id;
 
             // Retornar la vista con las materias asignadas (como modelo)
-            return View(materiasAsignadas);
+             return View(materiasAsignadas);
+          //  return PartialView("ConfigurarMaterias", materiasAsignadas);
+
         }
 
 

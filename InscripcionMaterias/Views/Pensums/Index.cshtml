@@ -39,20 +39,24 @@
 </div>
 
 <div class="modal fade" id="editPensumModal" tabindex="-1" role="dialog" aria-labelledby="editPensumModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <!-- formulario de editar AJAX -->
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="configurarMateriasModal" tabindex="-1" role="dialog" aria-labelledby="configurarMateriasModalLabel" aria-hidden="true">
+<!-- Modal -->
+<div class="modal fade" id="modalConfigurarMaterias" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
-            <!-- Aquí cargaremos el formulario -->
+            <div class="modal-body" id="contenidoModalConfigurarMaterias">
+                <!-- Aquí se cargará la vista parcial -->
+            </div>
         </div>
     </div>
 </div>
+
 
 
 @section Scripts {
@@ -152,6 +156,21 @@
                 }
             });
         }
+
+        /* function abrirModalConfigurarMaterias(idPensum) {
+            $.ajax({
+                url: '/PensumMaterias/ConfigurarMaterias/' + idPensum,
+                type: 'GET',
+                success: function (data) {
+                    $('#modalConfigurarMaterias .modal-content').html(data);
+                    $('#modalConfigurarMaterias').modal('show');
+                },
+                error: function () {
+                    alert('Error al cargar la configuración de materias.');
+                }
+            });
+        }*/
+
 
     </script>
 }
