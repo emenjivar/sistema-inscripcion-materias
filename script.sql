@@ -402,6 +402,7 @@ insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, cicl
 values (1, 45, null, 10);
 
 -- usuarios
+insert into usuario(username, email, nombre, password, rol) values ('admin', 'admins@itca.edu.sv', 'Carlos Menjivar', 'itca123', 'admin');
 insert into usuario(username, email, nombre, password, rol) values ('81339', 'silvio.peres@itca.edu.sv', 'Silvio Peres', 'itca123', 'alumno');
 insert into usuario(username, email, nombre, password, rol) values ('268464', 'winslow.devo@itca.edu.sv', 'Winslow Devo', 'itca123', 'alumno');
 insert into usuario(username, email, nombre, password, rol) values ('476868', 'jaquenette.ubsdale@itca.edu.sv', 'Jaquenette Ubsdale', 'itca123', 'alumno');
