@@ -1,34 +1,64 @@
 ﻿@model InscripcionMaterias.Models.Pensum
 
-@{
-    ViewData["Title"] = "Edit";
-}
-
-<h1>Edit</h1>
-
-<h4>Pensum</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Carrera" class="control-label"></label>
-                <input asp-for="Carrera" class="form-control" />
-                <span asp-validation-for="Carrera" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<form id="editPensumForm">
+    @Html.AntiForgeryToken()
+    <div class="modal-header">
+        <h5 class="modal-title">Editar Pensum</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
-</div>
+    <div class="modal-body">
+        <input type="hidden" name="Id" value="@Model.Id" />
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+        <div class="form-group">
+            <label for="Carrera">Carrera</label>
+            <input name="Carrera" class="form-control" value="@Model.Carrera" required />
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    </div>
+</form>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<script>
+    function cargarTablaPensums() {
+        $.ajax({
+                url: '/Pensums/PensumTabla',
+                type: 'GET',
+                success: function (data) {
+                    $('#pensumTablaContainer').html(data);
+                    $('#dataTable').DataTable();
+                },
+                error: function () {
+                    $('#pensumTablaContainer').html('<p>Error al cargar la tabla de carrera.</p>');
+                }
+            });
+    }
+
+    $('#editPensumForm').submit(function (e) {
+        e.preventDefault();
+
+        var formData = $(this).serialize();
+
+        $.ajax({
+            url: '/Pensums/Edit',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    $('#editPensumModal').modal('hide');
+                    Swal.fire('¡Actualizado!', 'El pensum ha sido modificado.', 'success').then(() => {
+                        cargarTablaPensums();
+                    });
+                } else {
+                    Swal.fire('Error', response.message, 'error');
+                }
+            },
+            error: function () {
+                Swal.fire('Error', 'No se pudo guardar el pensum.', 'error');
+            }
+        });
+    });
+</script>

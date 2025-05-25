@@ -8,18 +8,18 @@
 }
 
 <div class="container mt-4">
-    <h2 class="mb-4">Configurar materias para la carrera: <span class="text-primary">@nombreCarrera</span></h2>
+    <h2 class="mb-4">Pensum para: <span class="text-primary">@nombreCarrera</span></h2>
 
     <form id="formAgregarMateria" class="row g-3" asp-action="Create">
-        <input type="" name="IdPensum" value="@idPensum" />
+        <input type="hidden" name="IdPensum" value="@idPensum" />
 
         <div class="col-md-6">
-            <label for="materiaSelect" class="form-label">Materia:</label>
+            <label for="materiaSelect" class="form-label">Materia*:</label>
             <select class="form-select" id="materiaSelect" name="IdMateria" required>
                 <option value="">--Seleccione--</option>
                 @foreach (var mat in materiasDisponibles)
                 {
-                    <option value="@mat.Id">@mat.Nombre</option>
+                    <option value="@mat.Id">@mat.Nombre - @mat.Codigo</option>
                 }
             </select>
         </div>
@@ -36,10 +36,18 @@
         </div>
 
         <div class="col-md-3">
-            <label for="cicloSelect" class="form-label">Ciclo:</label>
+            <label for="cicloSelect" class="form-label">Ciclo*:</label>
             <select class="form-select" id="cicloSelect" name="CicloCurricular" required>
                 <option value="1">1</option>
                 <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
             </select>
         </div>
 

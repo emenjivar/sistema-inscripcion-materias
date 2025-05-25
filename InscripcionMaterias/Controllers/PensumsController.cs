@@ -91,7 +91,7 @@ namespace InscripcionMaterias.Controllers
             {
                 return NotFound();
             }
-            return View(pensum);
+            return PartialView("Edit", pensum);
         }
 
         // POST: Pensums/Edit/5
@@ -102,9 +102,7 @@ namespace InscripcionMaterias.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("Id,Carrera")] Pensum pensum)
         {
             if (id != pensum.Id)
-            {
-                return NotFound();
-            }
+                return Json(new { success = false, message = "ID inválido" });
 
             if (ModelState.IsValid)
             {
@@ -112,21 +110,19 @@ namespace InscripcionMaterias.Controllers
                 {
                     _context.Update(pensum);
                     await _context.SaveChangesAsync();
+                    return Json(new { success = true }); // 🔁 AJAX responde aquí
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PensumExists(pensum.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!_context.Pensums.Any(e => e.Id == pensum.Id))
+                        return Json(new { success = false, message = "Pensum no encontrado" });
+
+                    return Json(new { success = false, message = "Error de concurrencia" });
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(pensum);
+
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+            return Json(new { success = false, message = string.Join("; ", errors) });
         }
 
 
