@@ -9,7 +9,11 @@ public partial class Pensum
 
     public string Carrera { get; set; } = null!;
 
-    public bool Estado { get; set; }  = true;
+    public bool? Estado { get; set; } = true;
+
+    public string TipoCarrera { get; set; } = null!;
+
+    public int CantidadCiclos { get; set; }
 
     public virtual ICollection<Alumno> Alumnos { get; set; } = new List<Alumno>();
 

@@ -15,18 +15,46 @@
             <div class="card-body">
                 <form asp-action="Create">
                     <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-12">
+                            <!-- Carrera -->
                             <div class="form-group">
-                                <label for="Carrera" class="control-label">Carrera</label>
-                                <input name="Carrera" class="form-control" />
+                                <label asp-for="FirstOrDefault().Carrera" class="control-label">Carrera</label>
+                                <input asp-for="FirstOrDefault().Carrera" class="form-control" />
                                 <span asp-validation-for="FirstOrDefault().Carrera" class="text-danger"></span>
                             </div>
+
                         </div>
+
+                        <div class="col-md-6">
+                            <!-- Tipo de Carrera -->
+                            <div class="form-group">
+                                <label asp-for="FirstOrDefault().TipoCarrera" class="control-label">Tipo de Carrera</label>
+                                <select asp-for="FirstOrDefault().TipoCarrera" class="form-control" required>
+                                    <option value="">-- Seleccione --</option>
+                                    <option value="Técnico">Técnico</option>
+                                    <option value="Ingeniería">Ingeniería</option>
+                                </select>
+                                <span asp-validation-for="FirstOrDefault().TipoCarrera" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                            <div class="col-md-6">
+
+                            <!-- Cantidad de Ciclos -->
+                            <div class="form-group">
+                                <label asp-for="FirstOrDefault().CantidadCiclos" class="control-label">Cantidad de Ciclos</label>
+                                <input asp-for="FirstOrDefault().CantidadCiclos" type="number" min="1" class="form-control" />
+                                <span asp-validation-for="FirstOrDefault().CantidadCiclos" class="text-danger"></span>
+                            </div>
+
                     </div>
+                    </div>
+
                     <div class="form-group">
                         <input type="submit" value="Guardar" class="btn btn-success" />
                     </div>
                 </form>
+
             </div>
         </div>
     </div>

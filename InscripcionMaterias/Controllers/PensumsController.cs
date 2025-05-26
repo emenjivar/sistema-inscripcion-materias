@@ -60,18 +60,18 @@ namespace InscripcionMaterias.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Carrera")] Pensum pensum)
+        public async Task<IActionResult> Create([Bind("Carrera,TipoCarrera,CantidadCiclos")] Pensum pensum)
         {
             if (ModelState.IsValid)
             {
-                pensum.Estado = true; // asegúrate de establecerlo
                 _context.Add(pensum);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            var materias = await _context.Pensums.ToListAsync();
-            return View("Index", materias);
+
+            return View(pensum); // Si hay error, vuelve a mostrar el formulario
         }
+
 
         // GET: Pensums/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -94,7 +94,7 @@ namespace InscripcionMaterias.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Carrera")] Pensum pensum)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Carrera,TipoCarrera")] Pensum pensum)
         {
             if (id != pensum.Id)
                 return Json(new { success = false, message = "ID inválido" });
@@ -105,7 +105,7 @@ namespace InscripcionMaterias.Controllers
                 {
                     _context.Update(pensum);
                     await _context.SaveChangesAsync();
-                    return Json(new { success = true }); // 🔁 AJAX responde aquí
+                    return Json(new { success = true });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -119,6 +119,7 @@ namespace InscripcionMaterias.Controllers
             var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
             return Json(new { success = false, message = string.Join("; ", errors) });
         }
+
 
 
         // POST: Pensums/Delete/5
