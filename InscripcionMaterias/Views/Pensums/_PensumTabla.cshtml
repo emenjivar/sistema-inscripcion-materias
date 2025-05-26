@@ -46,9 +46,10 @@
                             <a href="#" onclick="confirmDelete('@item.Id', '@item.Carrera', '@item.Estado.ToString().ToLower()')" title="Activar o Desactivar" class="mr-3">
                                 <i class="fa @(item.Estado ?? false ? "fa-ban text-danger" : "fa-check text-success") fa-lg"></i>
                             </a>
-                            <a asp-controller="PensumMaterias" asp-action="ConfigurarMaterias" asp-route-id="@item.Id" class="btn btn-primary">
+                            <a asp-controller="PensumMaterias" asp-action="ConfigurarMaterias" asp-route-id="@item.Id" asp-route-cantidadCiclos="@item.CantidadCiclos" class="btn btn-primary">
                                 Configurar Materias
                             </a>
+
 
                             <!--
                                          <a href="javascript:void(0);"

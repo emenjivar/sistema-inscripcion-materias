@@ -5,6 +5,7 @@
     var materiasDisponibles = ViewBag.MateriasDisponibles as List<InscripcionMaterias.Models.Materium>;
     int idPensum = (int)ViewBag.IdPensum;
     string nombreCarrera = ViewBag.NombreCarrera ?? "Carrera";
+    int cantidadCiclos = ViewBag.CantidadCiclos ?? 1; // Por si no llega, valor por defecto 1
 }
 
 <div class="">
@@ -50,10 +51,11 @@
                     </select>
                 </div>
 
-                <div class="col-md-3">
-                    <label for="cicloSelect" class="form-label">Ciclo*:</label>
-                    <select class="form-select" id="cicloSelect" name="CicloCurricular" required>
-                        @for (int i = 1; i <= 10; i++)
+                <div class="col-md-6">
+                    <label for="cicloSelect">Ciclo*:</label>
+                    <select id="cicloSelect" name="CicloCurricular" class="form-control" required>
+                        <option value="">-- Seleccione ciclo --</option>
+                        @for (int i = 1; i <= cantidadCiclos; i++)
                         {
                             <option value="@i">@i</option>
                         }

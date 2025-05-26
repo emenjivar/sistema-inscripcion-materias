@@ -19,11 +19,11 @@ namespace InscripcionMaterias.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> ConfigurarMaterias(int id)
+        public async Task<IActionResult> ConfigurarMaterias(int id, int cantidadCiclos)
         {
             var pensum = await _context.Pensums.FirstOrDefaultAsync(p => p.Id == id);
             if (pensum == null) return NotFound();
-
+            ViewBag.CantidadCiclos = cantidadCiclos;
             ViewBag.NombreCarrera = pensum.Carrera;
             // Obtener todas las materias asignadas a ese pensum (carrera)
             var materiasAsignadas = await _context.PensumMaterias
