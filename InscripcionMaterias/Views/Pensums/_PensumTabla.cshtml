@@ -1,0 +1,55 @@
+﻿@model IEnumerable<InscripcionMaterias.Models.Pensum>
+
+<div class="card-body">
+    <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.First().Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.First().Carrera)
+                    </th>
+                    <th>
+                        Acciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Carrera)
+                        </td>
+                        <td>
+                            <a title="Editar" onclick="editarPensum(@item.Id)" class="mr-3">
+                                <i class="fa fa-edit fa-lg text-primary"></i>
+                            </a>
+                            <a href="#" onclick="confirmDelete('@item.Id', '@item.Carrera', '@item.Estado.ToString().ToLower()')" title="Activar o Desactivar" class="mr-3">
+                                <i class="fa @(item.Estado ? "fa-ban text-danger" : "fa-check text-success") fa-lg"></i>
+                            </a>
+                            <a asp-controller="PensumMaterias" asp-action="ConfigurarMaterias" asp-route-id="@item.Id" class="btn btn-primary">
+                                Configurar Materias
+                            </a>
+
+                            <!--
+                                         <a href="javascript:void(0);"
+                               onclick="abrirModalConfigurarMaterias(@item.Id)"
+                               class="btn btn-primary">
+                                Configurar Materias
+                            </a>
+                            -->
+
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

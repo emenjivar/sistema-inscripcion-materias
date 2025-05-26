@@ -1,0 +1,192 @@
+﻿@model List<InscripcionMaterias.Models.PensumMateria>
+
+@{
+    ViewData["Title"] = "Configurar Materias";
+    var materiasDisponibles = ViewBag.MateriasDisponibles as List<InscripcionMaterias.Models.Materium>;
+    int idPensum = (int)ViewBag.IdPensum;
+    string nombreCarrera = ViewBag.NombreCarrera ?? "Carrera";
+}
+
+<div class="">
+    <div class="mb-3">
+        <a asp-action="Index" asp-controller="Pensums" class="btn btn-primary">
+            <i class="bi bi-arrow-left-circle"></i> Regresar
+        </a>
+    </div>
+
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Pensum para: <span class="fw-bold">@nombreCarrera</span></h5>
+            <!--
+
+            <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Cerrar"></button>
+            -->
+
+        </div>
+
+        <div class="card-body" id="contenidoModalConfigurarMaterias">
+            <form id="formAgregarMateria" class="row g-3" asp-action="Create">
+                <input type="hidden" name="IdPensum" value="@idPensum" />
+
+                <div class="col-md-6">
+                    <label for="materiaSelect" class="form-label">Materia*:</label>
+                    <select class="form-select" id="materiaSelect" name="IdMateria" required>
+                        <option value="">--Seleccione--</option>
+                        @foreach (var mat in materiasDisponibles)
+                        {
+                            <option value="@mat.Id">@mat.Nombre - @mat.Codigo</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="prerequisitoSelect" class="form-label">Materia Prerequisito:</label>
+                    <select class="form-select" id="prerequisitoSelect" name="IdMateriaPrerequisito">
+                        <option value="">--Ninguno--</option>
+                        @foreach (var mat in materiasDisponibles)
+                        {
+                            <option value="@mat.Id">@mat.Nombre</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="cicloSelect" class="form-label">Ciclo*:</label>
+                    <select class="form-select" id="cicloSelect" name="CicloCurricular" required>
+                        @for (int i = 1; i <= 10; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-12 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-success w-50">
+                        <i class="bi bi-plus-circle"></i> Agregar Materia
+                    </button>
+                </div>
+
+            </form>
+
+            <div id="mensaje" class="mt-3"></div>
+        </div>
+    </div>
+
+    <div class="card mt-4 shadow-sm border-0">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">Materias Asignadas</h5>
+        </div>
+        <div class="card-body" id="materiasAsignadas">
+            @await Html.PartialAsync("_MateriasAsignadasPartial", Model)
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+
+
+        document.getElementById("formAgregarMateria").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const formData = new FormData(form);
+
+            fetch('@Url.Action("Create", "PensumMaterias")', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Error en la respuesta del servidor.");
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("mensaje").innerHTML =
+                        `<div class="alert alert-success">${data.message}</div>`;
+
+                    form.reset();
+
+                    // Recargar la lista de materias asignadas con la acción que devuelve el partial
+                    fetch('@Url.Action("ListarMateriasAsignadas", "PensumMaterias")?idPensum=' + encodeURIComponent(@idPensum))
+                        .then(resp => {
+                            if (!resp.ok) throw new Error("Error al cargar materias asignadas.");
+                            return resp.text();
+                        })
+                        .then(html => {
+                            document.getElementById("materiasAsignadas").innerHTML = html;
+
+                            // Re-attach event listeners to new delete buttons, si tienes esa funcionalidad
+                            attachDeleteHandlers();
+                        });
+                } else {
+                    // Mostrar errores
+                    let erroresHtml = '<ul>';
+                    data.detalles.forEach(det => {
+                        det.errores.forEach(error => {
+                            erroresHtml += `<li><strong>${det.campo}</strong>: ${error}</li>`;
+                        });
+                    });
+                    erroresHtml += '</ul>';
+
+                    document.getElementById("mensaje").innerHTML =
+                        `<div class="alert alert-danger"><strong>${data.message}</strong>${erroresHtml}</div>`;
+                }
+            })
+            .catch(error => {
+                document.getElementById("mensaje").innerHTML =
+                    `<div class="alert alert-danger">Ocurrió un error: ${error.message}</div>`;
+            });
+        });
+
+            function confirmDelete(e, id) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: '¿Deseas eliminar esta materia del pensum?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/PensumMaterias/Delete/${id}`,
+                        type: 'POST',
+                        headers: { 'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val() },
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire('Eliminado', 'La materia fue eliminada del pensum.', 'success')
+                                    .then(() => location.reload()); // Puedes reemplazar reload por llamada AJAX si no quieres recargar
+                            } else {
+                                Swal.fire('Error', response.message, 'error');
+                            }
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'Ocurrió un error al intentar eliminar.', 'error');
+                        }
+                    });
+                }
+            });
+        }
+
+        // Si necesitas esta función, defínela así:
+        function attachDeleteHandlers() {
+            $('.btn-eliminar').off('click').on('click', function (e) {
+                const id = $(this).data('id');
+                confirmDelete(e, id);
+            });
+        }
+
+        // Llamarla si estás cargando contenido por AJAX:
+        $(document).ready(function () {
+            attachDeleteHandlers();
+        });
+
+
+    </script>
+}

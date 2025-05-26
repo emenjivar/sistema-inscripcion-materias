@@ -33,9 +33,9 @@
                             @Html.DisplayFor(modelItem => item.UnidadesValorativas)
                         </td>
                         <td>
-                            <button class="btn btn-sm btn-primary" title="Editar" onclick="editarMateria(@item.Id)">
-                                <i class="fa fa-edit"></i>
-                            </button>
+                            <a title="Editar" onclick="editarMateria(@item.Id)">
+                                <i class="fa fa-edit fa-lg text-primary"></i>
+                            </a>
 
                             <a href="#" onclick="confirmDelete('@item.Id', '@item.Nombre')">
                                 <i class="fa fa-trash fa-lg"></i>
