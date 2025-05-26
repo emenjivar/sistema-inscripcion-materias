@@ -182,6 +182,9 @@ public partial class GestionDbContext : DbContext
             entity.ToTable("pensum");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CantidadCiclos)
+                .HasDefaultValue(1)
+                .HasColumnName("cantidad_ciclos");
             entity.Property(e => e.Carrera)
                 .HasMaxLength(60)
                 .IsUnicode(false)
@@ -189,6 +192,11 @@ public partial class GestionDbContext : DbContext
             entity.Property(e => e.Estado)
                 .HasDefaultValue(true)
                 .HasColumnName("estado");
+            entity.Property(e => e.TipoCarrera)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasDefaultValue("Ingeniería")
+                .HasColumnName("tipo_carrera");
         });
 
         modelBuilder.Entity<PensumMateria>(entity =>

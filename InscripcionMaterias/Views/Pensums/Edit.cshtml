@@ -1,4 +1,7 @@
 ﻿@model InscripcionMaterias.Models.Pensum
+@{
+    var opcionesTipoCarrera = new List<string> { "Técnico", "Ingeniería" };
+}
 
 <form id="editPensumForm">
     @Html.AntiForgeryToken()
@@ -11,10 +14,24 @@
     <div class="modal-body">
         <input type="hidden" name="Id" value="@Model.Id" />
 
-        <div class="form-group">
+        <div class="form-group col-md-12">
             <label for="Carrera">Carrera</label>
             <input name="Carrera" class="form-control" value="@Model.Carrera" required />
         </div>
+        
+        <div class="form-group col-md-6">
+            <label for="Carrera">Tipo carrera</label>
+            <select name="TipoCarrera" class="form-control" required>
+                <option value="">-- Seleccione --</option>
+                @for (int i = 0; i < opcionesTipoCarrera.Count; i++)
+                {
+                    var tipo = opcionesTipoCarrera[i];
+                    var selected = (Model.TipoCarrera == tipo) ? "selected" : "";
+                    @:<option value="@tipo" @selected>@tipo</option>
+                }
+            </select>       
+        </div>
+
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -25,16 +42,16 @@
 <script>
     function cargarTablaPensums() {
         $.ajax({
-                url: '/Pensums/PensumTabla',
-                type: 'GET',
-                success: function (data) {
-                    $('#pensumTablaContainer').html(data);
-                    $('#dataTable').DataTable();
-                },
-                error: function () {
-                    $('#pensumTablaContainer').html('<p>Error al cargar la tabla de carrera.</p>');
-                }
-            });
+            url: '/Pensums/PensumTabla',
+            type: 'GET',
+            success: function (data) {
+                $('#pensumTablaContainer').html(data);
+                $('#dataTable').DataTable();
+            },
+            error: function () {
+                $('#pensumTablaContainer').html('<p>Error al cargar la tabla de carrera.</p>');
+            }
+        });
     }
 
     $('#editPensumForm').submit(function (e) {
