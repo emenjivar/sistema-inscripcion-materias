@@ -1,0 +1,140 @@
+﻿
+
+
+    <!-- Apertura de inscripciones -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Apertura de inscripciones</h4>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="row">
+                    <div class="col-md-4">
+                            <label for="pensum" class="form-label">Pensum</label>
+                            <select class="form-select" id="pensum">
+                                <option>codigo1</option>
+                                <option>codigo2</option>
+                                <option>codigo3</option>
+                            </select>
+                    </div>
+                    <div class="col-md-4">
+                            <label for="ciclo" class="form-label">Ciclo académico</label>
+                            <input type="text" class="form-control" id="ciclo">
+                    </div>
+                </div>
+                <div class="row">
+                    
+                    <div class="col-md-4">
+                        <label for="anio" class="form-label">Año</label>
+                        <input type="number" class="form-control" id="anio">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="estado" class="form-label">Estado</label>
+                        <select class="form-select" id="estado">
+                            <option>Consulta</option>
+                            <option>Inscripcion</option>
+                            <option>Cerrado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-success mt-3">Guardar</button>
+                    </div>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+
+    <!-- Bloques de clases -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Bloques de clases</h4>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="form-label">Materia</label>
+                        <select class="form-select">
+                            <option>Desarrollo del pensamiento matematico</option>
+                            <option>Logica de programacion</option>
+                            <option>Aplicaciones moviles basicas</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Día de la semana</label>
+                        <select class="form-select">
+                            <option>Lunes</option>
+                            <option>Martes</option>
+                            <option>Miércoles</option>
+                            <option>Jueves</option>
+                            <option>Viernes</option>
+                            <option>Sábado</option>
+                            <option>Domingo</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Hora inicio</label>
+                        <input type="time" class="form-control">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Hora fin</label>
+                        <input type="time" class="form-control">
+                    </div>
+                </div>
+                <div class="row d-flex align-items-center">
+                    <div class="col-md-3">
+                        <label class="form-label">Grupo</label>
+                        <select class="form-select">
+                            <option>DS01</option>
+                            <option>DS02</option>
+                            <option>DS10</option>
+                        </select>
+                    </div>
+                
+                    <div class="col-md-3" >
+                        <a href="#" class="btn btn-link">Nuevo grupo</a>
+                    </div>
+                    <div class="col-md-3" >
+                        <button type="submit" class="btn btn-success">Agregar bloque</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de bloques de clases -->
+    <div class="card">
+        <div class="card-header">
+            <h4>Lista de Bloques de Clases</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Materia</th>
+                        <th>Grupo</th>
+                        <th>Día</th>
+                        <th>Hora inicio</th>
+                        <th>Hora fin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Programación Estructurada</td>
+                        <td>DS01</td>
+                        <td>Lunes</td>
+                        <td>5:00pm</td>
+                        <td>8:50pm</td>
+                    </tr>
+                    <tr>
+                        <td>Pensamiento Matemático</td>
+                        <td>DS01</td>
+                        <td>Martes</td>
+                        <td>5:00am</td>
+                        <td>8:50am</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
