@@ -102,6 +102,9 @@ CREATE TABLE resultado_ciclo_academico(
     FOREIGN KEY(id_materia) REFERENCES materia(id)
 );
 
+ALTER TABLE pensum ADD tipo_carrera VARCHAR(200) NOT NULL;
+ALTER TABLE pensum ADD cantidad_ciclos INT NOT NULL;
+
 SET IDENTITY_INSERT pensum ON
 insert into pensum(id, carrera) values (1, 'Ingenieria en sistemas');
 SET IDENTITY_INSERT pensum OFF
