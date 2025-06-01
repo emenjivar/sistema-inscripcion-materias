@@ -1,8 +1,74 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio - Sistema de Inscripción de Materias";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+    <h1 class="display-4 text-center mb-4">Bienvenido al Sistema de Inscripción de Materias</h1>
+    <p class="lead text-center mb-5">
+        Gestiona tus carreras, inscríbete en materias, y mantente al día con tus horarios académicos.
+        Nuestro sistema está diseñado para facilitar y agilizar todo el proceso de inscripción.
+    </p>
+
+    <div class="row justify-content-center">
+        <!-- Columna Izquierda: opciones -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">¿Qué deseas hacer hoy?</h5>
+                    <p class="card-text">Selecciona una opción para comenzar:</p>
+                    <div class="d-grid gap-3">
+                        <a href="@Url.Action("Index", "Pensums")" class="btn btn-primary btn-lg">Ver Carreras y Pensums</a>
+                        <a href="" class="btn btn-success btn-lg">Inscribirme en Materias</a>
+                        <a href="" class="btn btn-info btn-lg">Consultar Horarios</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Derecha: emoji + frase motivacional -->
+        <div class="col-md-6 d-flex flex-column justify-content-center align-items-center p-4 text-center bg-light rounded">
+            <div style="font-size: 4rem;">📚🎉</div>
+            <div id="fraseDiv" style="font-style: italic; font-size: 1.4rem; margin-top: 15px;"></div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Animación emoji: sube y baja suave
+        const emoji = document.getElementById('emoji');
+        let pos = 0, dir = 1;
+        setInterval(() => {
+            if (pos >= 15) dir = -1;
+            if (pos <= 0) dir = 1;
+            pos += dir;
+            emoji.style.top = -pos + 'px';
+        }, 50);
+
+             const frasesDivertidas = [
+            "Estudiar puede ser duro, ¡pero con café todo es posible! ☕",
+            "¿Sabías que inscribirte a tiempo te da superpoderes? 💪",
+            "La inscripción no es solo un trámite, ¡es tu pase al éxito! 🚀",
+            "Si no apruebas, no te rindas... ¡mejor inscribe otra vez! 🔄",
+            "Recuerda: un día sin estudiar es un día perdido, pero un día sin diversión también 😜",
+            "El estrés es real, pero también lo es esta sonrisa 😊",
+            "Si el conocimiento pesa, ¡aquí tienes la mochila más ligera! 🎒",
+            "Sigue adelante, que los exámenes solo son dragones imaginarios 🐉"
+        ];
+
+        function fraseDelDia() {
+            const hoy = new Date();
+            // Genera un número basado en el día, mes y año
+            const numDia = hoy.getDate();
+            const numMes = hoy.getMonth() + 1; // enero = 0
+            const numAnio = hoy.getFullYear();
+
+            // Una fórmula sencilla para "random" diario pero fijo
+            const indice = (numDia + numMes + numAnio) % frasesDivertidas.length;
+            return frasesDivertidas[indice];
+        }
+
+        document.getElementById('fraseDiv').innerText = fraseDelDia();
+
+    </script>
+}
