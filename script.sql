@@ -110,6 +110,13 @@ GO
 ALTER TABLE pensum
 ADD estado BIT default 1;
 GO
+ALTER TABLE pensum
+ADD tipo_carrera varchar(200) not null;
+go
+
+ALTER TABLE pensum
+ADD COLUMN cantidad_ciclos int NOT NULL;
+go
 -- Materias disponibles para poder armar los pensum
 SET IDENTITY_INSERT materia ON
 -- ciclo I
