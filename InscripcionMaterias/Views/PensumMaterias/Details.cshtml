@@ -1,8 +1,6 @@
 ﻿@model List<InscripcionMaterias.Models.PensumMateria>
 
 @{
-    ViewData["Title"] = "Detalle del Pensum";
-
     string nombreCarrera = ViewBag.NombreCarrera ?? "Carrera";
 }
 <div class="mt-4 d-flex justify-content-between">
@@ -18,7 +16,7 @@
 
     -->
 </div>
-<div class=" mt-4">
+<div class=" mt-4 mb-5">
     <div class="text-center mb-4">
         <h2 class="fw-bold text-primary">Detalle del Pensum</h2>
         <h5 class="text-muted fst-italic">@nombreCarrera</h5>
