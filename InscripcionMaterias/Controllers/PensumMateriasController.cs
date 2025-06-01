@@ -215,5 +215,34 @@ namespace InscripcionMaterias.Controllers
             return _context.PensumMaterias.Any(e => e.Id == id);
         }
 
+        public async Task<IActionResult> MiPensum(string? idEstudiante = "061818")
+        {
+            //cargar el id estudiante del logeo
+            if (idEstudiante == null)
+                return BadRequest("No se proporcionó el ID del estudiante");
+
+            var estudiante = await _context.Alumnos
+                .Include(e => e.IdPensumNavigation)
+                .FirstOrDefaultAsync(e => e.Carnet == idEstudiante);
+
+            if (estudiante == null)
+                return NotFound("Estudiante no encontrado");
+
+            if (estudiante.IdPensum == null)
+                return BadRequest("El estudiante no tiene un pensum asignado");
+
+            var materiasPensum = await _context.PensumMaterias
+                .Include(pm => pm.IdMateriaNavigation)
+                .Where(pm => pm.IdPensum == estudiante.IdPensum)
+                .ToListAsync();
+
+            ViewBag.NombreCarrera = estudiante.IdPensumNavigation.Carrera;
+
+            return View("Details", materiasPensum);
+        }
+
+
+
     }
+
 }
