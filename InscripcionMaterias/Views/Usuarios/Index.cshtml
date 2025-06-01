@@ -14,20 +14,28 @@
     <div class="col-md-12">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Nueva Materia</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Nuevo Usuario</h6>
             </div>
             <div class="card-body">
                 <form asp-action="Create" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                     <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label asp-for="FirstOrDefault().Username" class="control-label">Usuario</label>
+                                <label asp-for="FirstOrDefault().Username" class="control-label">Usuario/carnet</label>
                                 <input name="Username" class="form-control" />
                                 <span asp-validation-for="FirstOrDefault().Nombre" class="text-danger"></span>
                             </div>
                         </div>
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label asp-for="FirstOrDefault().Nombre" class="control-label">Nombre</label>
+                                <input name="Nombre" class="form-control" />
+                                <span asp-validation-for="FirstOrDefault().Nombre" class="text-danger"></span>
+                            </div>
+                        </div>
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="FirstOrDefault().Email" class="control-label">Correo</label>
@@ -35,13 +43,7 @@
                                 <span asp-validation-for="FirstOrDefault().Email" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="FirstOrDefault().Nombre" class="control-label">Nombre</label>
-                                <input name="Nombre" class="form-control" />
-                                <span asp-validation-for="FirstOrDefault().Nombre" class="text-danger"></span>
-                            </div>
-                        </div>
+                        
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="FirstOrDefault().Password" class="control-label">Contrasena</label>

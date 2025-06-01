@@ -44,12 +44,6 @@ namespace InscripcionMaterias.Controllers
             return View(usuario);
         }
 
-        // GET: Usuarios/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         // POST: Usuarios/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -63,7 +57,8 @@ namespace InscripcionMaterias.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(usuario);
+            var usuarios = await _context.Usuario.ToListAsync();
+            return View("Index", usuarios);
         }
 
         // GET: Usuarios/Edit/5
