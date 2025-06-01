@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using InscripcionMaterias.Models;
+using InscripcionMaterias.CustomModels;
 
 namespace InscripcionMaterias.Controllers
 {
@@ -77,7 +78,17 @@ namespace InscripcionMaterias.Controllers
             {
                 return NotFound();
             }
-            return View(usuario);
+
+            // Por seguridad, no se mapea aca el password.
+            var usuarioEditModel = new UsuarioEditModel
+            {
+                Id = usuario.Id,
+                Username = usuario.Username,
+                Email = usuario.Email,
+                Nombre = usuario.Nombre,
+                Rol = usuario.Rol
+            };
+            return View(usuarioEditModel);
         }
 
         // POST: Usuarios/Edit/5
@@ -85,7 +96,7 @@ namespace InscripcionMaterias.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Email,Nombre,Password,Rol")] Usuario usuario)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Email,Nombre,NewPassword,Rol")] UsuarioEditModel usuario)
         {
             if (id != usuario.Id)
             {
@@ -96,7 +107,24 @@ namespace InscripcionMaterias.Controllers
             {
                 try
                 {
-                    _context.Update(usuario);
+                    var usuarioToUpdate = await _context.Usuario.FindAsync(usuario.Id);
+
+                    if (usuarioToUpdate == null)
+                    {
+                        return NotFound();
+                    }
+
+                    usuarioToUpdate.Username = usuario.Username;
+                    usuarioToUpdate.Email = usuario.Email;
+                    usuarioToUpdate.Nombre = usuario.Nombre;
+                    usuarioToUpdate.Rol = usuario.Rol;
+
+                    // Actualizar password solamente si el valor se envia desde el formulario
+                    if (!string.IsNullOrEmpty(usuario.NewPassword))
+                    {
+                        usuarioToUpdate.Password = usuario.NewPassword;
+                    }
+                    _context.Update(usuarioToUpdate);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
