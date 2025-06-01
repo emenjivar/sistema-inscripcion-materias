@@ -1,42 +1,37 @@
-﻿@model InscripcionMaterias.Models.PensumMateria
+﻿@model List<InscripcionMaterias.Models.PensumMateria>
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalle del Pensum";
+
+    string nombreCarrera = ViewBag.NombreCarrera ?? "Carrera";
 }
+<div class="mt-4 d-flex justify-content-between">
 
-<h1>Details</h1>
+    <!--
 
-<div>
-    <h4>PensumMateria</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CicloCurricular)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CicloCurricular)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdMateriaNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdMateriaNavigation.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdMateriaPrerequisitoNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdMateriaPrerequisitoNavigation.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdPensumNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdPensumNavigation.Id)
-        </dd>
-    </dl>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left-circle"></i> Regresar a la Lista
+    </a>
+    <a asp-action="Edit" asp-route-id="@Model.FirstOrDefault()?.Id" class="btn btn-primary">
+        <i class="bi bi-pencil-square"></i> Editar Pensum
+    </a>
+
+    -->
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class=" mt-4">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-primary">Detalle del Pensum</h2>
+        <h5 class="text-muted fst-italic">@nombreCarrera</h5>
+    </div>
+
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-gradient bg-dark text-white rounded-top-4">
+            <h5 class="mb-0 text-uppercase">Materias Asignadas</h5>
+        </div>
+        <div class="card-body bg-light-subtle" id="materiasAsignadas">
+            @await Html.PartialAsync("_MateriasAsignadasPartial", Model)
+        </div>
+    </div>
+
+
 </div>
