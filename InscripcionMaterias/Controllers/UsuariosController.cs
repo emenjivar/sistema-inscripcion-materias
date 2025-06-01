@@ -22,7 +22,8 @@ namespace InscripcionMaterias.Controllers
         // GET: Usuarios
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Usuario.ToListAsync());
+            var usuariosDB = await _context.Usuario.ToListAsync();
+            return View(usuariosDB);
         }
 
         // GET: Usuarios/Details/5
@@ -80,14 +81,7 @@ namespace InscripcionMaterias.Controllers
             }
 
             // Por seguridad, no se mapea aca el password.
-            var usuarioEditModel = new UsuarioEditModel
-            {
-                Id = usuario.Id,
-                Username = usuario.Username,
-                Email = usuario.Email,
-                Nombre = usuario.Nombre,
-                Rol = usuario.Rol
-            };
+            var usuarioEditModel = dbEntityToModel(usuario);
             return View(usuarioEditModel);
         }
 
@@ -143,6 +137,17 @@ namespace InscripcionMaterias.Controllers
             return View(usuario);
         }
 
+        private UsuarioEditModel dbEntityToModel(Usuario usuarioDB)
+        {
+            return new UsuarioEditModel
+            {
+                Username = usuarioDB.Username,
+                Email = usuarioDB.Email,
+                Nombre = usuarioDB.Nombre,
+                Rol = usuarioDB.Rol
+            };
+        }
+
         // GET: Usuarios/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -179,6 +184,12 @@ namespace InscripcionMaterias.Controllers
         private bool UsuarioExists(int id)
         {
             return _context.Usuario.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> UsuariosTabla()
+        {
+            var usuariosDB = await _context.Usuario.ToListAsync();
+            return PartialView("_UsuariosTabla", usuariosDB);
         }
     }
 }

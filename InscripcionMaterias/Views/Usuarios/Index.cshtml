@@ -4,50 +4,88 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Usuarios</h1>
 
-<p>
+@* <p>
     <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Username)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rol)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Username)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rol)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+</p> *@
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Nueva Materia</h6>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label asp-for="FirstOrDefault().Username" class="control-label">Usuario</label>
+                                <input name="Username" class="form-control" />
+                                <span asp-validation-for="FirstOrDefault().Nombre" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FirstOrDefault().Email" class="control-label">Correo</label>
+                                <input name="Email" class="form-control" />
+                                <span asp-validation-for="FirstOrDefault().Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FirstOrDefault().Nombre" class="control-label">Nombre</label>
+                                <input name="Nombre" class="form-control" />
+                                <span asp-validation-for="FirstOrDefault().Nombre" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FirstOrDefault().Password" class="control-label">Contrasena</label>
+                                <input name="Password" class="form-control" type="password" />
+                                <span asp-validation-for="FirstOrDefault().Password" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FirstOrDefault().Rol" class="control-label">Rol</label>
+                                <input name="Rol" class="form-control" />
+                                <span asp-validation-for="FirstOrDefault().Rol" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Guardar" class="btn btn-success" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4" id="usuariosTablaContainer">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Listado de usuarios</h6>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '/Usuarios/UsuariosTabla',
+                type: 'GET',
+                success: function (data) {
+                    $('#usuariosTablaContainer').html(data);
+                    $('#dataTable').DataTable();
+                },
+                error: function (hrx, status, error) {
+                    $('#usuariosTablaContainer').html('<p>Error al cargar la tabla de usuarios</p> ' + error)
+                }
+            })
+        })
+    </script>
 }
-    </tbody>
-</table>
