@@ -27,7 +27,7 @@ public partial class Alumno
     public int IdUsuario { get; set; }
 
 
-    //Las siguientes 3 lineas se agregan para evitar errores de referencia en PneusmMateriasController.
+    //Las siguientes 3 lineas se agregan para evitar errores de referencia en PneusmMateriasController
 
     public virtual Pensum? IdPensumNavigation { get; set; }
     public virtual ICollection<InscripcionAlumno> InscripcionAlumnos { get; set; } = new List<InscripcionAlumno>();
