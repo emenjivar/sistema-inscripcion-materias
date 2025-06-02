@@ -35,32 +35,33 @@ public partial class GestionDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-0SKR1BR;Database=inscripcion_universitaria;Trusted_Connection=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=PC-ANSP-1593;Database=inscripcion_universitaria;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Alumno>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__alumno__3213E83FF66165BE");
+            entity.HasKey(e => e.Id).HasName("PK__alumno__3213E83F07CD6744");
 
             entity.ToTable("alumno");
 
-            entity.HasIndex(e => e.Carnet, "UQ__alumno__4CDEAA6E6C44F43D").IsUnique();
+            entity.HasIndex(e => e.Carnet, "UQ__alumno__4CDEAA6EF93FAF77").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Apellidos)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .HasColumnName("apellidos");
             entity.Property(e => e.Carnet)
                 .HasMaxLength(6)
                 .IsUnicode(false)
                 .HasColumnName("carnet");
             entity.Property(e => e.IdPensum).HasColumnName("id_pensum");
-            entity.Property(e => e.Password)
-                .HasMaxLength(64)
+            entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
+            entity.Property(e => e.Nombres)
+                .HasMaxLength(60)
                 .IsUnicode(false)
-                .HasColumnName("password");
-
-            entity.HasOne(d => d.IdPensumNavigation).WithMany(p => p.Alumnos)
-                .HasForeignKey(d => d.IdPensum)
-                .HasConstraintName("FK__alumno__id_pensu__3D5E1FD2");
+                .HasColumnName("nombres");
         });
 
         modelBuilder.Entity<BloqueHorarioMaterial>(entity =>
