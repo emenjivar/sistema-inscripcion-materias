@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Alumnos</h1>
+<h1>Index</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -16,10 +16,16 @@
                 @Html.DisplayNameFor(model => model.Carnet)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Password)
+                @Html.DisplayNameFor(model => model.Nombres)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdPensumNavigation)
+                @Html.DisplayNameFor(model => model.Apellidos)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdPensum)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdUsuario)
             </th>
             <th></th>
         </tr>
@@ -31,10 +37,16 @@
                 @Html.DisplayFor(modelItem => item.Carnet)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Password)
+                @Html.DisplayFor(modelItem => item.Nombres)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdPensumNavigation.Id)
+                @Html.DisplayFor(modelItem => item.Apellidos)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdPensum)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdUsuario)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

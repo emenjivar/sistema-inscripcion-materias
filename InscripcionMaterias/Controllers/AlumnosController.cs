@@ -21,8 +21,7 @@ namespace InscripcionMaterias.Controllers
         // GET: Alumnos
         public async Task<IActionResult> Index()
         {
-            var gestionDbContext = _context.Alumnos.Include(a => a.IdPensumNavigation);
-            return View(await gestionDbContext.ToListAsync());
+            return View(await _context.Alumnos.ToListAsync());
         }
 
         // GET: Alumnos/Details/5
@@ -34,7 +33,6 @@ namespace InscripcionMaterias.Controllers
             }
 
             var alumno = await _context.Alumnos
-                .Include(a => a.IdPensumNavigation)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (alumno == null)
             {
@@ -47,7 +45,6 @@ namespace InscripcionMaterias.Controllers
         // GET: Alumnos/Create
         public IActionResult Create()
         {
-            ViewData["IdPensum"] = new SelectList(_context.Pensums, "Id", "Id");
             return View();
         }
 
@@ -56,7 +53,7 @@ namespace InscripcionMaterias.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Carnet,IdPensum,Password")] Alumno alumno)
+        public async Task<IActionResult> Create([Bind("Id,Carnet,Nombres,Apellidos,IdPensum,IdUsuario")] Alumno alumno)
         {
             if (ModelState.IsValid)
             {
@@ -64,7 +61,6 @@ namespace InscripcionMaterias.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdPensum"] = new SelectList(_context.Pensums, "Id", "Id", alumno.IdPensum);
             return View(alumno);
         }
 
@@ -81,7 +77,6 @@ namespace InscripcionMaterias.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdPensum"] = new SelectList(_context.Pensums, "Id", "Id", alumno.IdPensum);
             return View(alumno);
         }
 
@@ -90,7 +85,7 @@ namespace InscripcionMaterias.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Carnet,IdPensum,Password")] Alumno alumno)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Carnet,Nombres,Apellidos,IdPensum,IdUsuario")] Alumno alumno)
         {
             if (id != alumno.Id)
             {
@@ -117,7 +112,6 @@ namespace InscripcionMaterias.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdPensum"] = new SelectList(_context.Pensums, "Id", "Id", alumno.IdPensum);
             return View(alumno);
         }
 
@@ -130,7 +124,6 @@ namespace InscripcionMaterias.Controllers
             }
 
             var alumno = await _context.Alumnos
-                .Include(a => a.IdPensumNavigation)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (alumno == null)
             {
