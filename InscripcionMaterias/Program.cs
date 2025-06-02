@@ -1,4 +1,7 @@
+using DinkToPdf.Contracts;
+using DinkToPdf;
 using InscripcionMaterias.Models;
+using InscripcionMaterias.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<GestionDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ConexionGestion")));
+builder.Services.AddScoped<ReporteService>();
+builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools()));
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.

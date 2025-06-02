@@ -87,108 +87,92 @@
 
 @section Scripts {
     <script>
+        const idPensum = @ViewBag.IdPensum;
 
+        // Función para recargar el partial
+        function recargarMateriasAsignadas() {
+            fetch(`/PensumMaterias/ListarMateriasAsignadas?idPensum=${idPensum}`)
+                .then(resp => {
+                    if (!resp.ok) throw new Error("Error al cargar materias.");
+                    return resp.text();
+                })
+                .then(html => {
+                    document.getElementById("materiasAsignadas").innerHTML = html;
+                    attachDeleteHandlers(); // Re-asigna eventos a botones nuevos
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        }
 
+        // Al enviar el formulario (crear materia)
         document.getElementById("formAgregarMateria").addEventListener("submit", function (e) {
             e.preventDefault();
 
-            const form = e.target;
-            const formData = new FormData(form);
+            const formData = new FormData(this);
 
             fetch('@Url.Action("Create", "PensumMaterias")', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => {
-                if (!response.ok) throw new Error("Error en la respuesta del servidor.");
-                return response.json();
-            })
+            .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    document.getElementById("mensaje").innerHTML =
-                        `<div class="alert alert-success">${data.message}</div>`;
-
-                    form.reset();
-
-                    // Recargar la lista de materias asignadas con la acción que devuelve el partial
-                    fetch('@Url.Action("ListarMateriasAsignadas", "PensumMaterias")?idPensum=' + encodeURIComponent(@idPensum))
-                        .then(resp => {
-                            if (!resp.ok) throw new Error("Error al cargar materias asignadas.");
-                            return resp.text();
-                        })
-                        .then(html => {
-                            document.getElementById("materiasAsignadas").innerHTML = html;
-
-                            // Re-attach event listeners to new delete buttons, si tienes esa funcionalidad
-                            attachDeleteHandlers();
-                        });
+                    document.getElementById("mensaje").innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                    this.reset();
+                    recargarMateriasAsignadas(); // 👈 RECARGAR partial al crear
                 } else {
-                    // Mostrar errores
-                    let erroresHtml = '<ul>';
-                    data.detalles.forEach(det => {
-                        det.errores.forEach(error => {
-                            erroresHtml += `<li><strong>${det.campo}</strong>: ${error}</li>`;
-                        });
-                    });
-                    erroresHtml += '</ul>';
-
-                    document.getElementById("mensaje").innerHTML =
-                        `<div class="alert alert-danger"><strong>${data.message}</strong>${erroresHtml}</div>`;
+                    document.getElementById("mensaje").innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
                 }
-            })
-            .catch(error => {
-                document.getElementById("mensaje").innerHTML =
-                    `<div class="alert alert-danger">Ocurrió un error: ${error.message}</div>`;
             });
         });
 
-            function confirmDelete(e, id) {
+        // Eliminar
+        function confirmDelete(e, id) {
             e.preventDefault();
 
             Swal.fire({
                 title: '¿Estás seguro?',
-                text: '¿Deseas eliminar esta materia del pensum?',
+                text: '¿Deseas eliminar esta materia?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
                 confirmButtonText: 'Sí, eliminar',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $.ajax({
-                        url: `/PensumMaterias/Delete/${id}`,
-                        type: 'POST',
-                        headers: { 'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val() },
-                        success: function (response) {
-                            if (response.success) {
-                                Swal.fire('Eliminado', 'La materia fue eliminada del pensum.', 'success')
-                                    .then(() => location.reload()); // Puedes reemplazar reload por llamada AJAX si no quieres recargar
-                            } else {
-                                Swal.fire('Error', response.message, 'error');
-                            }
-                        },
-                        error: function () {
-                            Swal.fire('Error', 'Ocurrió un error al intentar eliminar.', 'error');
+                    fetch(`/PensumMaterias/Delete/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        }
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            recargarMateriasAsignadas(); // 👈 RECARGAR partial al eliminar
                         }
                     });
                 }
             });
         }
 
-        // Si necesitas esta función, defínela así:
+        // Re-asignar eventos de eliminar
         function attachDeleteHandlers() {
-            $('.btn-eliminar').off('click').on('click', function (e) {
-                const id = $(this).data('id');
-                confirmDelete(e, id);
+            document.querySelectorAll(".btn-eliminar").forEach(btn => {
+                btn.removeEventListener("click", onDeleteClick);
+                btn.addEventListener("click", onDeleteClick);
             });
         }
 
-        // Llamarla si estás cargando contenido por AJAX:
-        $(document).ready(function () {
+        function onDeleteClick(e) {
+            const id = this.dataset.id;
+            confirmDelete(e, id);
+        }
+
+        // Inicial
+        document.addEventListener("DOMContentLoaded", () => {
             attachDeleteHandlers();
         });
-
-
     </script>
+
 }
