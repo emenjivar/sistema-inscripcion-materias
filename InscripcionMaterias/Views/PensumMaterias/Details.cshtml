@@ -1,22 +1,12 @@
 ﻿@model List<InscripcionMaterias.Models.PensumMateria>
-
 @{
     string nombreCarrera = ViewBag.NombreCarrera ?? "Carrera";
+    int idPensum = Model.FirstOrDefault()?.IdPensum ?? 0;
 }
-<div class="mt-4 d-flex justify-content-between">
 
-    <!--
+@Html.AntiForgeryToken()
 
-    <a asp-action="Index" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left-circle"></i> Regresar a la Lista
-    </a>
-    <a asp-action="Edit" asp-route-id="@Model.FirstOrDefault()?.Id" class="btn btn-primary">
-        <i class="bi bi-pencil-square"></i> Editar Pensum
-    </a>
-
-    -->
-</div>
-<div class=" mt-4 mb-5">
+<div class="mt-4 mb-5">
     <div class="text-center mb-4">
         <h2 class="fw-bold text-primary">Detalle del Pensum</h2>
         <h5 class="text-muted fst-italic">@nombreCarrera</h5>
@@ -26,50 +16,77 @@
         <div class="card-header bg-gradient bg-dark text-white rounded-top-4">
             <h5 class="mb-0 text-uppercase">Materias Asignadas</h5>
         </div>
-        <div class="card-body bg-light-subtle" id="materiasAsignadas">
-            @await Html.PartialAsync("_MateriasAsignadasPartial", Model)
+        <div class="card-body" id="materiasAsignadas">
+            @if (Model != null && Model.Any())
+            {
+                @await Html.PartialAsync("_MateriasAsignadasPartial", Model)
+            }
+            else
+            {
+                <div class="alert alert-warning">No hay materias asignadas al pensum.</div>
+            }
         </div>
+
     </div>
-
-
 </div>
 
 @section Scripts {
     <script>
         function confirmDelete(e, id) {
             e.preventDefault();
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
             Swal.fire({
                 title: '¿Estás seguro?',
-                text: '¿Deseas eliminar esta materia del pensum?',
+                text: '¿Deseas eliminar esta materia?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
                 confirmButtonText: 'Sí, eliminar',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $.ajax({
-                        url: `/PensumMaterias/Delete/${id}`,
-                        type: 'POST',
-                        headers: { 'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val() },
-                        success: function (response) {
-                            if (response.success) {
-                                Swal.fire('Eliminado', 'La materia fue eliminada del pensum.', 'success')
-                                    .then(() => location.reload()); // Puedes reemplazar reload por llamada AJAX si no quieres recargar
-                            } else {
-                                Swal.fire('Error', response.message, 'error');
-                            }
-                        },
-                        error: function () {
-                            Swal.fire('Error', 'Ocurrió un error al intentar eliminar.', 'error');
+                    fetch(`/PensumMaterias/Delete/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': token,
+                            'Content-Type': 'application/json'
                         }
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Error en la respuesta');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire('Éxito', 'Materia eliminada correctamente', 'success');
+                            recargarMateriasAsignadas(@idPensum);
+
+                        } else {
+                            Swal.fire('Error', data.message || 'Error al eliminar', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire('Error', 'No se pudo completar la solicitud', 'error');
                     });
                 }
             });
         }
-
+             const idPensum = @idPensum;
+                function recargarMateriasAsignadas(idPensum) {
+            fetch(`/PensumMaterias/ListarMateriasAsignadas?idPensum=${idPensum}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Error en la respuesta');
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('materiasAsignadas').innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error al recargar:', error);
+                    Swal.fire('Error', 'No se pudo recargar la lista de materias', 'error');
+                });
+        }
 
     </script>
 }

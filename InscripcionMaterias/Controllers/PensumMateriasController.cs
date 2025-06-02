@@ -132,11 +132,12 @@ namespace InscripcionMaterias.Controllers
                 .Include(pm => pm.IdMateriaNavigation)
                 .ToList();
 
-            var cantidadCiclos = materias.Max(m => m.CicloCurricular); // o como lo calcules normalmente
+            var cantidadCiclos = materias.Any() ? materias.Max(m => m.CicloCurricular) : 0;
+            // o como lo calcules normalmente
             var nombreCarrera = _context.Pensums
                 .Where(p => p.Id == idPensum)
                 .Select(p => p.Carrera)
-                .FirstOrDefault();
+                .FirstOrDefault() ?? "Carrera no encontrada";
 
             ViewBag.CantidadCiclos = cantidadCiclos;
             ViewBag.NombreCarrera = nombreCarrera;
