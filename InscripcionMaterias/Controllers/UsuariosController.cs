@@ -22,7 +22,7 @@ namespace InscripcionMaterias.Controllers
         // GET: Usuarios
         public async Task<IActionResult> Index()
         {
-            var usuariosDB = await _context.Usuario.ToListAsync();
+            var usuariosDB = await _context.Usuarios.ToListAsync();
             return View(usuariosDB);
         }
 
@@ -34,7 +34,7 @@ namespace InscripcionMaterias.Controllers
                 return NotFound();
             }
 
-            var usuario = await _context.Usuario
+            var usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (usuario == null)
             {
@@ -49,7 +49,7 @@ namespace InscripcionMaterias.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Username,Email,Nombre,Password,Rol")] Usuario usuario)
+        public async Task<IActionResult> Create([Bind("Id,Username,Email,Nombres,Apellidos,Password,Rol")] Usuario usuario)
         {
             if (ModelState.IsValid)
             {
@@ -57,7 +57,7 @@ namespace InscripcionMaterias.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            var usuarios = await _context.Usuario.ToListAsync();
+            var usuarios = await _context.Usuarios.ToListAsync();
             return View("Index", usuarios);
         }
 
@@ -69,7 +69,7 @@ namespace InscripcionMaterias.Controllers
                 return NotFound();
             }
 
-            var usuario = await _context.Usuario.FindAsync(id);
+            var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario == null)
             {
                 return NotFound();
@@ -85,7 +85,7 @@ namespace InscripcionMaterias.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Email,Nombre,NewPassword,Rol")] UsuarioEditModel usuario)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Email,Nombres,Apellidos,NewPassword,Rol")] UsuarioEditModel usuario)
         {
             if (id != usuario.Id)
             {
@@ -96,7 +96,7 @@ namespace InscripcionMaterias.Controllers
             {
                 try
                 {
-                    var usuarioToUpdate = await _context.Usuario.FindAsync(usuario.Id);
+                    var usuarioToUpdate = await _context.Usuarios.FindAsync(usuario.Id);
 
                     if (usuarioToUpdate == null)
                     {
@@ -105,7 +105,8 @@ namespace InscripcionMaterias.Controllers
 
                     usuarioToUpdate.Username = usuario.Username;
                     usuarioToUpdate.Email = usuario.Email;
-                    usuarioToUpdate.Nombre = usuario.Nombre;
+                    usuarioToUpdate.Nombres = usuario.Nombres;
+                    usuarioToUpdate.Apellidos = usuario.Apellidos;
                     usuarioToUpdate.Rol = usuario.Rol;
 
                     // Actualizar password solamente si el valor se envia desde el formulario
@@ -138,7 +139,8 @@ namespace InscripcionMaterias.Controllers
             {
                 Username = usuarioDB.Username,
                 Email = usuarioDB.Email,
-                Nombre = usuarioDB.Nombre,
+                Nombres = usuarioDB.Nombres,
+                Apellidos = usuarioDB.Apellidos,
                 Rol = usuarioDB.Rol
             };
         }
@@ -151,7 +153,7 @@ namespace InscripcionMaterias.Controllers
                 return NotFound();
             }
 
-            var usuario = await _context.Usuario
+            var usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (usuario == null)
             {
@@ -166,10 +168,10 @@ namespace InscripcionMaterias.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var usuario = await _context.Usuario.FindAsync(id);
+            var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario != null)
             {
-                _context.Usuario.Remove(usuario);
+                _context.Usuarios.Remove(usuario);
             }
 
             await _context.SaveChangesAsync();
@@ -178,12 +180,12 @@ namespace InscripcionMaterias.Controllers
 
         private bool UsuarioExists(int id)
         {
-            return _context.Usuario.Any(e => e.Id == id);
+            return _context.Usuarios.Any(e => e.Id == id);
         }
 
         public async Task<IActionResult> UsuariosTabla()
         {
-            var usuariosDB = await _context.Usuario.ToListAsync();
+            var usuariosDB = await _context.Usuarios.ToListAsync();
             return PartialView("_UsuariosTabla", usuariosDB);
         }
     }

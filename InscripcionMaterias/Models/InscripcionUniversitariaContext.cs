@@ -34,7 +34,7 @@ public partial class InscripcionUniversitariaContext : DbContext
                 .HasMaxLength(64)
                 .IsUnicode(false)
                 .HasColumnName("email");
-            entity.Property(e => e.Nombre)
+            entity.Property(e => e.Nombres)
                 .HasMaxLength(120)
                 .IsUnicode(false)
                 .HasColumnName("nombre");

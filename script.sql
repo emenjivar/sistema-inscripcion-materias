@@ -21,7 +21,8 @@ CREATE TABLE usuario(
 	id INT PRIMARY KEY IDENTITY(1,1),
 	username VARCHAR(30) NOT NULL,
 	email VARCHAR(64) NOT NULL,
-	nombre VARCHAR(120),
+	nombres VARCHAR(60) NOT NULL,
+	apellidos VARCHAR(60) NOT NULL,
 	password VARCHAR(64) NOT NULL,
 	rol VARCHAR(15) NOT NULL CHECK (rol IN ('admin', 'alumno'))
 );
@@ -105,21 +106,16 @@ CREATE TABLE resultado_ciclo_academico(
 ALTER TABLE pensum ADD tipo_carrera VARCHAR(200) NOT NULL;
 ALTER TABLE pensum ADD cantidad_ciclos INT NOT NULL;
 
-SET IDENTITY_INSERT pensum ON
-insert into pensum(id, carrera) values (1, 'Ingenieria en sistemas');
-SET IDENTITY_INSERT pensum OFF
-GO
-
 ALTER TABLE pensum
 ADD estado BIT default 1;
 GO
-ALTER TABLE pensum
-ADD tipo_carrera varchar(200) not null;
-go
 
-ALTER TABLE pensum
-ADD COLUMN cantidad_ciclos int NOT NULL;
-go
+SET IDENTITY_INSERT pensum ON
+insert into pensum(id, carrera, tipo_carrera, cantidad_ciclos, estado) values (1, 'Ingenieria en sistemas', 'Nocturna', 10, 1);
+SET IDENTITY_INSERT pensum OFF
+GO
+
+
 -- Materias disponibles para poder armar los pensum
 SET IDENTITY_INSERT materia ON
 -- ciclo I
@@ -415,60 +411,60 @@ insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, cicl
 values (1, 45, null, 10);
 
 -- usuarios
-insert into usuario(username, email, nombre, password, rol) values ('admin', 'admin@itca.edu.sv', 'Administrador', 'itca123', 'admin');
-insert into usuario(username, email, nombre, password, rol) values ('81339', 'silvio.peres@itca.edu.sv', 'Silvio Peres', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('268464', 'winslow.devo@itca.edu.sv', 'Winslow Devo', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('476868', 'jaquenette.ubsdale@itca.edu.sv', 'Jaquenette Ubsdale', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('104336', 'velvet.ramiro@itca.edu.sv', 'Velvet Ramiro', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('779833', 'brittany.semechik@itca.edu.sv', 'Brittany Semechik', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('512250', 'cassey.dolby@itca.edu.sv', 'Cassey Dolby', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('861674', 'camile.schouthede@itca.edu.sv', 'Camile Schouthede', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('188977', 'celie.brandle@itca.edu.sv', 'Celie Brandle', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('122104', 'bjorn.zapata@itca.edu.sv', 'Bjorn Zapata', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('112319', 'meade.byatt@itca.edu.sv', 'Meade Byatt', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('25275', 'enrique.aumerle@itca.edu.sv', 'Enrique Aumerle', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('277198', 'delly.martinez@itca.edu.sv', 'Delly Martinez', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('807518', 'beatrisa.cowitz@itca.edu.sv', 'Beatrisa Cowitz', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('635861', 'erasmus.champkin@itca.edu.sv', 'Erasmus Champkin', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('725362', 'zolly.local@itca.edu.sv', 'Zolly Local', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('806724', 'crystal.pellingar@itca.edu.sv', 'Crystal Pellingar', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('817472', 'carola.bunner@itca.edu.sv', 'Carola Bunner', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('362474', 'roddie.mouget@itca.edu.sv', 'Roddie Mouget', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('418114', 'nealon.wonfor@itca.edu.sv', 'Nealon Wonfor', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('689308', 'agna.seaward@itca.edu.sv', 'Agna Seaward', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('41769', 'scarlett.deinert@itca.edu.sv', 'Scarlett Deinert', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('732458', 'ashlin.arrigucci@itca.edu.sv', 'Ashlin Arrigucci', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('66082', 'toinette.attrie@itca.edu.sv', 'Toinette Attrie', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('816904', 'roddie.tomaszynski@itca.edu.sv', 'Roddie Tomaszynski', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('785917', 'adamo.joinsey@itca.edu.sv', 'Adamo Joinsey', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('701056', 'alexa.maith@itca.edu.sv', 'Alexa Maith', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('655130', 'rachael.brandenberg@itca.edu.sv', 'Rachael Brandenberg', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('486747', 'ginger.lamplough@itca.edu.sv', 'Ginger Lamplough', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('96048', 'rodi.kuban@itca.edu.sv', 'Rodi Kuban', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('676821', 'farleigh.middle@itca.edu.sv', 'Farleigh Middle', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('411388', 'boothe.pothecary@itca.edu.sv', 'Boothe Pothecary', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('867381', 'marlane.klosges@itca.edu.sv', 'Marlane Klosges', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('537605', 'kelsi.drinkeld@itca.edu.sv', 'Kelsi Drinkeld', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('780368', 'paulette.warlaw@itca.edu.sv', 'Paulette Warlaw', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('693004', 'caz.spaughton@itca.edu.sv', 'Caz Spaughton', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('487259', 'austin.sanday@itca.edu.sv', 'Austin Sanday', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('948442', 'romonda.druitt@itca.edu.sv', 'Romonda Druitt', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('495345', 'gordy.cornelius@itca.edu.sv', 'Gordy Cornelius', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('289414', 'findley.randleson@itca.edu.sv', 'Findley Randleson', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('934215', 'alika.crayk@itca.edu.sv', 'Alika Crayk', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('480379', 'kienan.vanyukhin@itca.edu.sv', 'Kienan Vanyukhin', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('94735', 'chelsy.hercules@itca.edu.sv', 'Chelsy Hercules', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('677876', 'mathilda.mcmillian@itca.edu.sv', 'Mathilda McMillian', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('403219', 'jean.trevenu@itca.edu.sv', 'Jean Trevenu', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('12636', 'etheline.dubarry@itca.edu.sv', 'Etheline Dubarry', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('642193', 'franni.amps@itca.edu.sv', 'Franni Amps', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('935889', 'odell.yerrell@itca.edu.sv', 'Odell Yerrell', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('851243', 'briney.mcmaster@itca.edu.sv', 'Briney McMaster', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('209288', 'elbert.hatfull@itca.edu.sv', 'Elbert Hatfull', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('143963', 'luella.phelip@itca.edu.sv', 'Luella Phelip', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('401667', 'sayers.toten@itca.edu.sv', 'Sayers Toten', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('280691', 'cal.grimme@itca.edu.sv', 'Cal Grimme', 'itca123', 'alumno');
-insert into usuario(username, email, nombre, password, rol) values ('971008', 'marlena.scardifield@itca.edu.sv', 'Marlena Scardifield', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('admin', 'admin@itca.edu.sv', 'Administrador','', 'itca123', 'admin');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('81339', 'silvio.peres@itca.edu.sv', 'Silvio', 'Peres', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('268464', 'winslow.devo@itca.edu.sv', 'Winslow', 'Devo', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos,  password, rol) values ('476868', 'jaquenette.ubsdale@itca.edu.sv', 'Jaquenette', 'Ubsdale', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('104336', 'velvet.ramiro@itca.edu.sv', 'Velvet', 'Ramiro', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('779833', 'brittany.semechik@itca.edu.sv', 'Brittany', 'Semechik', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('512250', 'cassey.dolby@itca.edu.sv', 'Cassey', 'Dolby', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('861674', 'camile.schouthede@itca.edu.sv', 'Camile', 'Schouthede', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('188977', 'celie.brandle@itca.edu.sv', 'Celie', 'Brandle', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('122104', 'bjorn.zapata@itca.edu.sv', 'Bjorn', 'Zapata', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('112319', 'meade.byatt@itca.edu.sv', 'Meade', 'Byatt', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('25275', 'enrique.aumerle@itca.edu.sv', 'Enrique', 'Aumerle', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('277198', 'delly.martinez@itca.edu.sv', 'Delly', 'Martinez', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('807518', 'beatrisa.cowitz@itca.edu.sv', 'Beatrisa', 'Cowitz', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('635861', 'erasmus.champkin@itca.edu.sv', 'Erasmus', 'Champkin', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('725362', 'zolly.local@itca.edu.sv', 'Zolly', 'Local', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('806724', 'crystal.pellingar@itca.edu.sv', 'Crystal', 'Pellingar', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('817472', 'carola.bunner@itca.edu.sv', 'Carola', 'Bunner', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('362474', 'roddie.mouget@itca.edu.sv', 'Roddie', 'Mouget', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos,  password, rol) values ('418114', 'nealon.wonfor@itca.edu.sv', 'Nealon', 'Wonfor', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('689308', 'agna.seaward@itca.edu.sv', 'Agna', 'Seaward', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('41769', 'scarlett.deinert@itca.edu.sv', 'Scarlett', 'Deinert', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('732458', 'ashlin.arrigucci@itca.edu.sv', 'Ashlin', 'Arrigucci', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('66082', 'toinette.attrie@itca.edu.sv', 'Toinette', 'Attrie', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('816904', 'roddie.tomaszynski@itca.edu.sv', 'Roddie', 'Tomaszynski', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('785917', 'adamo.joinsey@itca.edu.sv', 'Adamo', 'Joinsey', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('701056', 'alexa.maith@itca.edu.sv', 'Alexa', 'Maith', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('655130', 'rachael.brandenberg@itca.edu.sv', 'Rachael', 'Brandenberg', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('486747', 'ginger.lamplough@itca.edu.sv', 'Ginger', 'Lamplough', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('96048', 'rodi.kuban@itca.edu.sv', 'Rodi', 'Kuban', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('676821', 'farleigh.middle@itca.edu.sv', 'Farleigh', 'Middle', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('411388', 'boothe.pothecary@itca.edu.sv', 'Boothe', 'Pothecary', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('867381', 'marlane.klosges@itca.edu.sv', 'Marlane', 'Klosges', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('537605', 'kelsi.drinkeld@itca.edu.sv', 'Kelsi', 'Drinkeld', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos,  password, rol) values ('780368', 'paulette.warlaw@itca.edu.sv', 'Paulette', 'Warlaw', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('693004', 'caz.spaughton@itca.edu.sv', 'Caz', 'Spaughton', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('487259', 'austin.sanday@itca.edu.sv', 'Austin', 'Sanday', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('948442', 'romonda.druitt@itca.edu.sv', 'Romonda', 'Druitt', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('495345', 'gordy.cornelius@itca.edu.sv', 'Gordy', 'Cornelius', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('289414', 'findley.randleson@itca.edu.sv', 'Findley', 'Randleson', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('934215', 'alika.crayk@itca.edu.sv', 'Alika', 'Crayk', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('480379', 'kienan.vanyukhin@itca.edu.sv', 'Kienan', 'Vanyukhin', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('94735', 'chelsy.hercules@itca.edu.sv', 'Chelsy', 'Hercules', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('677876', 'mathilda.mcmillian@itca.edu.sv', 'Mathilda', 'McMillian', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('403219', 'jean.trevenu@itca.edu.sv', 'Jean', 'Trevenu', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('12636', 'etheline.dubarry@itca.edu.sv', 'Ethelin', ' Dubarry', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('642193', 'franni.amps@itca.edu.sv', 'Franni', 'Amps', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('935889', 'odell.yerrell@itca.edu.sv', 'Odell', 'Yerrell', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('851243', 'briney.mcmaster@itca.edu.sv', 'Briney', 'McMaster', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('209288', 'elbert.hatfull@itca.edu.sv', 'Elbert', 'Hatfull', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('143963', 'luella.phelip@itca.edu.sv', 'Luella', 'Phelip', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('401667', 'sayers.toten@itca.edu.sv', 'Sayers', 'Toten', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos, password, rol) values ('280691', 'cal.grimme@itca.edu.sv', 'Cal', 'Grimme', 'itca123', 'alumno');
+insert into usuario(username, email, nombres, apellidos,  password, rol) values ('971008', 'marlena.scardifield@itca.edu.sv', 'Marlena', 'Scardifield', 'itca123', 'alumno');
 
 -- alumnos
 insert into alumno(carnet,nombres,apellidos, id_pensum, id_usuario) values('81339', 'Silvio', 'Peres', 1, (select top 1 id from usuario where username='81339'));

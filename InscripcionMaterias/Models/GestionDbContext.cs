@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using InscripcionMaterias.Models;
 
 namespace InscripcionMaterias.Models;
 
@@ -34,19 +33,21 @@ public partial class GestionDbContext : DbContext
 
     public virtual DbSet<ResultadoCicloAcademico> ResultadoCicloAcademicos { get; set; }
 
+    public virtual DbSet<Usuario> Usuarios { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=charlie;Database=inscripcion_universitaria;Trusted_Connection=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=charlie;Database=inscripcion_universitaria;Trusted_Connection=true;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Alumno>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__alumno__3213E83F07CD6744");
+            entity.HasKey(e => e.Id).HasName("PK__alumno__3213E83F3A3B16BF");
 
             entity.ToTable("alumno");
 
-            entity.HasIndex(e => e.Carnet, "UQ__alumno__4CDEAA6EF93FAF77").IsUnique();
+            entity.HasIndex(e => e.Carnet, "UQ__alumno__4CDEAA6EA0EC4AA2").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Apellidos)
@@ -63,11 +64,20 @@ public partial class GestionDbContext : DbContext
                 .HasMaxLength(60)
                 .IsUnicode(false)
                 .HasColumnName("nombres");
+
+            entity.HasOne(d => d.IdPensumNavigation).WithMany(p => p.Alumnos)
+                .HasForeignKey(d => d.IdPensum)
+                .HasConstraintName("FK__alumno__id_pensu__403A8C7D");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Alumnos)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__alumno__id_usuar__412EB0B6");
         });
 
         modelBuilder.Entity<BloqueHorarioMaterial>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__bloque_h__3213E83FCA800064");
+            entity.HasKey(e => e.Id).HasName("PK__bloque_h__3213E83F30913B76");
 
             entity.ToTable("bloque_horario_material");
 
@@ -85,22 +95,22 @@ public partial class GestionDbContext : DbContext
             entity.HasOne(d => d.IdGrupoNavigation).WithMany(p => p.BloqueHorarioMaterials)
                 .HasForeignKey(d => d.IdGrupo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__bloque_ho__id_gr__4D94879B");
+                .HasConstraintName("FK__bloque_ho__id_gr__5165187F");
 
             entity.HasOne(d => d.IdInscripcionNavigation).WithMany(p => p.BloqueHorarioMaterials)
                 .HasForeignKey(d => d.IdInscripcion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__bloque_ho__id_in__4BAC3F29");
+                .HasConstraintName("FK__bloque_ho__id_in__4F7CD00D");
 
             entity.HasOne(d => d.IdMateriaNavigation).WithMany(p => p.BloqueHorarioMaterials)
                 .HasForeignKey(d => d.IdMateria)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__bloque_ho__id_ma__4CA06362");
+                .HasConstraintName("FK__bloque_ho__id_ma__5070F446");
         });
 
         modelBuilder.Entity<GrupoClase>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__grupo_cl__3213E83F5A21C3EC");
+            entity.HasKey(e => e.Id).HasName("PK__grupo_cl__3213E83FD201E7CD");
 
             entity.ToTable("grupo_clase");
 
@@ -113,7 +123,7 @@ public partial class GestionDbContext : DbContext
 
         modelBuilder.Entity<Inscripcion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__inscripc__3213E83FAE8E7BCB");
+            entity.HasKey(e => e.Id).HasName("PK__inscripc__3213E83FB48D358D");
 
             entity.ToTable("inscripcion");
 
@@ -129,12 +139,12 @@ public partial class GestionDbContext : DbContext
             entity.HasOne(d => d.IdPensumNavigation).WithMany(p => p.Inscripcions)
                 .HasForeignKey(d => d.IdPensum)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__inscripci__id_pe__45F365D3");
+                .HasConstraintName("FK__inscripci__id_pe__49C3F6B7");
         });
 
         modelBuilder.Entity<InscripcionAlumno>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__inscripc__3213E83F6DF8BC18");
+            entity.HasKey(e => e.Id).HasName("PK__inscripc__3213E83FD7D9AA49");
 
             entity.ToTable("inscripcion_alumno");
 
@@ -145,21 +155,21 @@ public partial class GestionDbContext : DbContext
             entity.HasOne(d => d.IdAlumnoNavigation).WithMany(p => p.InscripcionAlumnos)
                 .HasForeignKey(d => d.IdAlumno)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__inscripci__id_al__5070F446");
+                .HasConstraintName("FK__inscripci__id_al__5441852A");
 
             entity.HasOne(d => d.IdBloqueHorarioMateriaNavigation).WithMany(p => p.InscripcionAlumnos)
                 .HasForeignKey(d => d.IdBloqueHorarioMateria)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__inscripci__id_bl__5165187F");
+                .HasConstraintName("FK__inscripci__id_bl__5535A963");
         });
 
         modelBuilder.Entity<Materium>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__materia__3213E83FF61BBFC7");
+            entity.HasKey(e => e.Id).HasName("PK__materia__3213E83FDAC676D1");
 
             entity.ToTable("materia");
 
-            entity.HasIndex(e => e.Codigo, "UQ__materia__40F9A206F1298D82").IsUnique();
+            entity.HasIndex(e => e.Codigo, "UQ__materia__40F9A2067F552A40").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Codigo)
@@ -171,7 +181,7 @@ public partial class GestionDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("descripcion");
             entity.Property(e => e.Nombre)
-                .HasMaxLength(60)
+                .HasMaxLength(120)
                 .IsUnicode(false)
                 .HasColumnName("nombre");
             entity.Property(e => e.UnidadesValorativas).HasColumnName("unidades_valorativas");
@@ -179,16 +189,14 @@ public partial class GestionDbContext : DbContext
 
         modelBuilder.Entity<Pensum>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__pensum__3213E83FF4EB8029");
+            entity.HasKey(e => e.Id).HasName("PK__pensum__3213E83F5BCBF129");
 
             entity.ToTable("pensum");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CantidadCiclos)
-                .HasDefaultValue(1)
-                .HasColumnName("cantidad_ciclos");
+            entity.Property(e => e.CantidadCiclos).HasColumnName("cantidad_ciclos");
             entity.Property(e => e.Carrera)
-                .HasMaxLength(60)
+                .HasMaxLength(256)
                 .IsUnicode(false)
                 .HasColumnName("carrera");
             entity.Property(e => e.Estado)
@@ -197,13 +205,12 @@ public partial class GestionDbContext : DbContext
             entity.Property(e => e.TipoCarrera)
                 .HasMaxLength(200)
                 .IsUnicode(false)
-                .HasDefaultValue("Ingeniería")
                 .HasColumnName("tipo_carrera");
         });
 
         modelBuilder.Entity<PensumMateria>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__pensum_m__3213E83FF430791A");
+            entity.HasKey(e => e.Id).HasName("PK__pensum_m__3213E83F27E3CBFA");
 
             entity.ToTable("pensum_materias");
 
@@ -216,21 +223,21 @@ public partial class GestionDbContext : DbContext
             entity.HasOne(d => d.IdMateriaNavigation).WithMany(p => p.PensumMateriaIdMateriaNavigations)
                 .HasForeignKey(d => d.IdMateria)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__pensum_ma__id_ma__412EB0B6");
+                .HasConstraintName("FK__pensum_ma__id_ma__44FF419A");
 
             entity.HasOne(d => d.IdMateriaPrerequisitoNavigation).WithMany(p => p.PensumMateriaIdMateriaPrerequisitoNavigations)
                 .HasForeignKey(d => d.IdMateriaPrerequisito)
-                .HasConstraintName("FK__pensum_ma__id_ma__4222D4EF");
+                .HasConstraintName("FK__pensum_ma__id_ma__45F365D3");
 
             entity.HasOne(d => d.IdPensumNavigation).WithMany(p => p.PensumMateria)
                 .HasForeignKey(d => d.IdPensum)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__pensum_ma__id_pe__403A8C7D");
+                .HasConstraintName("FK__pensum_ma__id_pe__440B1D61");
         });
 
         modelBuilder.Entity<ResultadoCicloAcademico>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__resultad__3213E83FD3252EF0");
+            entity.HasKey(e => e.Id).HasName("PK__resultad__3213E83FEA82DAD5");
 
             entity.ToTable("resultado_ciclo_academico");
 
@@ -242,18 +249,49 @@ public partial class GestionDbContext : DbContext
             entity.HasOne(d => d.IdAlumnoNavigation).WithMany(p => p.ResultadoCicloAcademicos)
                 .HasForeignKey(d => d.IdAlumno)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__resultado__id_al__5441852A");
+                .HasConstraintName("FK__resultado__id_al__5812160E");
 
             entity.HasOne(d => d.IdMateriaNavigation).WithMany(p => p.ResultadoCicloAcademicos)
                 .HasForeignKey(d => d.IdMateria)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__resultado__id_ma__5535A963");
+                .HasConstraintName("FK__resultado__id_ma__59063A47");
+        });
+
+        modelBuilder.Entity<Usuario>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__usuario__3213E83F3933383B");
+
+            entity.ToTable("usuario");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Apellidos)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .HasColumnName("apellidos");
+            entity.Property(e => e.Email)
+                .HasMaxLength(64)
+                .IsUnicode(false)
+                .HasColumnName("email");
+            entity.Property(e => e.Nombres)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .HasColumnName("nombres");
+            entity.Property(e => e.Password)
+                .HasMaxLength(64)
+                .IsUnicode(false)
+                .HasColumnName("password");
+            entity.Property(e => e.Rol)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .HasColumnName("rol");
+            entity.Property(e => e.Username)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasColumnName("username");
         });
 
         OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
-public DbSet<InscripcionMaterias.Models.Usuario> Usuario { get; set; } = default!;
 }

@@ -19,7 +19,9 @@ namespace InscripcionMaterias.CustomModels
         [EmailAddress(ErrorMessage = "Formato de correo electrónico inválido.")]
         public string Email { get; set; } = null!;
 
-        public string? Nombre { get; set; }
+        public string? Nombres { get; set; }
+
+        public string? Apellidos { get; set; }
 
         // La nueva controsena es opcional durante la edicion
         [DataType(DataType.Password)]

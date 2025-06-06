@@ -11,9 +11,13 @@ public partial class Usuario
 
     public string Email { get; set; } = null!;
 
-    public string? Nombre { get; set; }
+    public string Nombres { get; set; } = null!;
+
+    public string Apellidos { get; set; } = null!;
 
     public string Password { get; set; } = null!;
 
     public string Rol { get; set; } = null!;
+
+    public virtual ICollection<Alumno> Alumnos { get; set; } = new List<Alumno>();
 }
