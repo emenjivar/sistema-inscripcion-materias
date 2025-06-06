@@ -51,11 +51,11 @@
                             @Html.DisplayFor(modelItem => item.Rol)
                         </td>
                         <td>
-                            <a title="Editar" onclick="editarUsuario(@item.Id)">
+                            <a asp-action="Edit" asp-route-id="@item.Id">
                                 <i class="fa fa-edit fa-lg text-primary"></i>
                             </a>
-
-                            <a href="#" onclick="confirmDelete('@item.Id', '@item.Username')">
+                           
+                            <a asp-action="Delete" asp-route-id="@item.Id">
                                 <i class="fa fa-trash fa-lg"></i>
                             </a>
                         </td>
