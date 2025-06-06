@@ -55,10 +55,24 @@ namespace InscripcionMaterias.Controllers
             {
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
+                if (usuario.Rol == "Alumno")
+                {
+                    var alumno = new Alumno
+                    {
+                        Carnet = usuario.Username,
+                        Nombres = usuario.Nombres,
+                        Apellidos = usuario.Apellidos,
+                        IdUsuario = usuario.Id,
+                    };
+                    _context.Add(alumno);
+                    await _context.SaveChangesAsync();
+                }
+
                 return RedirectToAction(nameof(Index));
             }
-            var usuarios = await _context.Usuarios.ToListAsync();
-            return View("Index", usuarios);
+
+            var usuariosExistentes = await _context.Usuarios.ToListAsync();
+            return View("Index", usuariosExistentes);
         }
 
         // GET: Usuarios/Edit/5
