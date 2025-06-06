@@ -113,6 +113,13 @@ GO
 ALTER TABLE pensum
 ADD estado BIT default 1;
 GO
+ALTER TABLE pensum
+ADD tipo_carrera varchar(200) not null;
+go
+
+ALTER TABLE pensum
+ADD COLUMN cantidad_ciclos int NOT NULL;
+go
 -- Materias disponibles para poder armar los pensum
 SET IDENTITY_INSERT materia ON
 -- ciclo I
@@ -408,7 +415,7 @@ insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, cicl
 values (1, 45, null, 10);
 
 -- usuarios
-insert into usuario(username, email, nombre, password, rol) values ('admin', 'admins@itca.edu.sv', 'Carlos Menjivar', 'itca123', 'admin');
+insert into usuario(username, email, nombre, password, rol) values ('admin', 'admin@itca.edu.sv', 'Administrador', 'itca123', 'admin');
 insert into usuario(username, email, nombre, password, rol) values ('81339', 'silvio.peres@itca.edu.sv', 'Silvio Peres', 'itca123', 'alumno');
 insert into usuario(username, email, nombre, password, rol) values ('268464', 'winslow.devo@itca.edu.sv', 'Winslow Devo', 'itca123', 'alumno');
 insert into usuario(username, email, nombre, password, rol) values ('476868', 'jaquenette.ubsdale@itca.edu.sv', 'Jaquenette Ubsdale', 'itca123', 'alumno');

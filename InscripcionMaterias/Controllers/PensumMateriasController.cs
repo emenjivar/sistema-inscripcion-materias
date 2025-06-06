@@ -125,15 +125,26 @@ namespace InscripcionMaterias.Controllers
 
         }
 
-        public async Task<IActionResult> ListarMateriasAsignadas(int idPensum)
+        public IActionResult ListarMateriasAsignadas(int idPensum)
         {
-            var materiasAsignadas = await _context.PensumMaterias
-                .Include(pm => pm.IdMateriaNavigation)
+            var materias = _context.PensumMaterias
                 .Where(pm => pm.IdPensum == idPensum)
-                .ToListAsync();
+                .Include(pm => pm.IdMateriaNavigation)
+                .ToList();
 
-            return PartialView("_MateriasAsignadasPartial", materiasAsignadas);
+            var cantidadCiclos = materias.Any() ? materias.Max(m => m.CicloCurricular) : 0;
+            // o como lo calcules normalmente
+            var nombreCarrera = _context.Pensums
+                .Where(p => p.Id == idPensum)
+                .Select(p => p.Carrera)
+                .FirstOrDefault() ?? "Carrera no encontrada";
+
+            ViewBag.CantidadCiclos = cantidadCiclos;
+            ViewBag.NombreCarrera = nombreCarrera;
+
+            return PartialView("_MateriasAsignadasPartial", materias);
         }
+
 
 
         // GET: PensumMaterias/Edit/5
@@ -215,5 +226,41 @@ namespace InscripcionMaterias.Controllers
             return _context.PensumMaterias.Any(e => e.Id == id);
         }
 
+        public async Task<IActionResult> MiPensum(string? idEstudiante = "061818")
+        {
+            if (idEstudiante == null)
+                return BadRequest("No se proporcionó el ID del estudiante");
+
+            var estudiante = await _context.Alumnos
+                .Include(e => e.IdPensumNavigation)
+                .FirstOrDefaultAsync(e => e.Carnet == idEstudiante);
+
+            if (estudiante == null)
+                return NotFound("Estudiante no encontrado");
+
+            if (estudiante.IdPensum == null)
+                return BadRequest("El estudiante no tiene un pensum asignado");
+
+            var materiasPensum = await _context.PensumMaterias
+                .Include(pm => pm.IdMateriaNavigation)
+                .Where(pm => pm.IdPensum == estudiante.IdPensum)
+                .ToListAsync();
+
+            ViewBag.NombreCarrera = estudiante.IdPensumNavigation.Carrera;
+
+            // Calcular el total de ciclos y años
+            int maxCiclo = materiasPensum.Max(m => m.CicloCurricular);
+            int cantidadAnios = (int)Math.Ceiling(maxCiclo / 2.0);
+
+            ViewBag.CantidadCiclos = maxCiclo;
+            ViewBag.CantidadAnios = cantidadAnios;
+
+            return View("Details", materiasPensum);
+        }
+
+
+
+
     }
+
 }
