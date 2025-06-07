@@ -43,9 +43,14 @@
         </dd>
     </dl>
     
-    <form asp-action="Delete">
+    <form asp-action="Delete" method="post" onsubmit="return confirm('¿Estás seguro que deseas eliminar este alumno?');">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <button type="submit" class="btn btn-danger" title="Eliminar">
+            <i class="fas fa-trash-alt"></i> Eliminar
+        </button>
+        <a asp-action="Index" class="btn btn-secondary" title="Regresar">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i> Volver
+        </a>
     </form>
+
 </div>

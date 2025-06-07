@@ -34,8 +34,7 @@
                 <span asp-validation-for="IdPensum" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdUsuario" class="control-label"></label>
-                <input asp-for="IdUsuario" class="form-control" />
+                <input type="hidden" asp-for="IdUsuario" class="form-control" />
                 <span asp-validation-for="IdUsuario" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -46,7 +45,9 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary" title="Regresar">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i> Volver
+    </a>
 </div>
 
 @section Scripts {
