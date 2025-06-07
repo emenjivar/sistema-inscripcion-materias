@@ -1,0 +1,88 @@
+﻿@model InscripcionMaterias.CustomModels.LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Inscripción de Materias</title>
+    
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <style>
+        body {
+            background-color: #f8f9fa; /* Un fondo claro de Bootstrap */
+        }
+        .login-container {
+            max-width: 400px; /* Ancho máximo para el formulario */
+            margin: 100px auto; /* Centrar vertical y horizontalmente */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+            background-color: #ffffff; /* Fondo blanco para el contenedor */
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #007bff; /* Color primario de Bootstrap */
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .btn-login {
+            background-color: #007bff; /* Color primario de Bootstrap para el botón */
+            border-color: #007bff;
+            color: white;
+            width: 100%; /* Botón de ancho completo */
+            padding: 10px;
+            font-size: 1.1em;
+            border-radius: 5px;
+        }
+        .btn-login:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        .validation-summary-errors {
+            list-style-type: none;
+            padding-left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-container"> @* Este div es para centrar y dar estilo al formulario *@
+            <h2 class="login-header">Iniciar Sesión</h2>
+            <form asp-action="Login" method="post">
+                @* Mostrar errores de validación de modelo no asociados a un campo específico *@
+                <div asp-validation-summary="ModelOnly" class="text-danger validation-summary-errors"></div>
+
+                <div class="form-group"> @* Clase Bootstrap para agrupar etiqueta y campo *@
+                    <label asp-for="Username"></label>
+                    <input asp-for="Username" class="form-control" /> @* Clase Bootstrap para estilizar el input *@
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" class="form-control" type="password" /> @* Clase Bootstrap para estilizar el input *@
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-login">Acceder</button> @* Clases Bootstrap para el botón *@
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>
