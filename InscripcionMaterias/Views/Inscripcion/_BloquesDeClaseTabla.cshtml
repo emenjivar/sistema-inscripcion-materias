@@ -1,0 +1,37 @@
+﻿@model InscripcionMaterias.Models.ViewModels.SimpleInscripcionViewModel
+
+@* Esta es una vista parcial. No tiene el layout completo, solo el HTML para la tabla. *@
+@* Se usa para actualizar solo esta sección de la página con AJAX. *@
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Materia</th>
+                <th>Grupo</th>
+                <th>Bloque</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.BloquesEnTabla != null && Model.BloquesEnTabla.Any())
+            {
+                // Si hay bloques de clase en la lista del ViewModel, mostrarlos
+                foreach (var bloque in Model.BloquesEnTabla)
+                {
+                    <tr>
+                        <td>@bloque.MateriaNombre</td>
+                        <td>@bloque.GrupoCodigo</td>
+                        <td>@bloque.BloqueCompleto</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                // Si no hay bloques, mostrar un mensaje
+                <tr>
+                    <td colspan="3" class="text-center">No hay bloques de clase para mostrar.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
