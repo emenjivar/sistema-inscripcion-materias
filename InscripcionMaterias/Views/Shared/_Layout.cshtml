@@ -61,6 +61,14 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Usuarios" asp-action="Index">Usuarios</a>
                         </li>
+
+                        @{
+                            string? username = Context.Session.GetString("Username");
+                        }
+
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Account" asp-action="Logout">Cerrar Sesión (@username)</a>
+                        </li>
                     </ul>
                 </div>
             </div>
