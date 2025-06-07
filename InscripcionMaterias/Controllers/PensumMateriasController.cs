@@ -226,14 +226,18 @@ namespace InscripcionMaterias.Controllers
             return _context.PensumMaterias.Any(e => e.Id == id);
         }
 
-        public async Task<IActionResult> MiPensum(string? idEstudiante = "061818")
+        public async Task<IActionResult> MiPensum()
         {
-            if (idEstudiante == null)
-                return BadRequest("No se proporcionó el ID del estudiante");
+            string? carnetEstudiante = HttpContext.Session.GetString("Username");
+
+
+            if (carnetEstudiante == null)
+                return BadRequest("El carnet del estudiante no existe");
 
             var estudiante = await _context.Alumnos
                 .Include(e => e.IdPensumNavigation)
-                .FirstOrDefaultAsync(e => e.Carnet == idEstudiante);
+                .FirstOrDefaultAsync(e => e.Carnet == carnetEstudiante); // Usar el carnet de la sesión
+
 
             if (estudiante == null)
                 return NotFound("Estudiante no encontrado");
