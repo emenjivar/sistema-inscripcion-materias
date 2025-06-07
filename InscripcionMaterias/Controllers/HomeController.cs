@@ -22,6 +22,8 @@ namespace InscripcionMaterias.Controllers
             return View();
         }
 
+
+
         public IActionResult Privacy()
         {
             if (HttpContext.Session.GetString("Username") == null)

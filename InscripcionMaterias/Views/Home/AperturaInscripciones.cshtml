@@ -1,87 +1,125 @@
-﻿
+﻿@model InscripcionMaterias.Models.ViewModels.SimpleInscripcionViewModel
+
+@{
+    ViewBag.Title = "Apertura de Inscripciones";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Apertura de inscripciones</h2>
+
+    @* Mostrar mensajes de éxito o error (estos vienen del TempData del controlador) *@
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @* VERIFICACIÓN ADICIONAL PARA EVITAR NULLREFERENCEEXCEPTION *@
+    @if (TempData.ContainsKey("ErrorMessage") && TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
 
-    <!-- Apertura de inscripciones -->
+
     <div class="card mb-4">
         <div class="card-header">
-            <h4>Apertura de inscripciones</h4>
+            Datos de Inscripción
         </div>
         <div class="card-body">
-            <form>
-                <div class="row">
-                    <div class="col-md-4">
-                            <label for="pensum" class="form-label">Pensum</label>
-                            <select class="form-select" id="pensum">
-                                <option>codigo1</option>
-                                <option>codigo2</option>
-                                <option>codigo3</option>
-                            </select>
+            @* Formulario para guardar la información de la inscripción *@
+            <form id="formInscripcion" asp-action="GuardarInscripcion" asp-controller="Inscripcion" method="post">
+                @Html.AntiForgeryToken() @* Muy importante para la seguridad *@
+
+                @* Campo oculto para saber si estamos actualizando o creando una nueva inscripción *@
+                <input type="hidden" id="IdInscripcionActual" name="IdInscripcionActual" value="@Model.IdInscripcionActual" />
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="CicloAcademico" class="form-label">Ciclo académico</label>
+                        <input type="number" class="form-control" id="CicloAcademico" name="CicloAcademico" value="@Model.CicloAcademico" required />
+                        @Html.ValidationMessageFor(model => model.CicloAcademico, "", new { @class = "text-danger" })
                     </div>
-                    <div class="col-md-4">
-                            <label for="ciclo" class="form-label">Ciclo académico</label>
-                            <input type="text" class="form-control" id="ciclo">
+                    <div class="col-md-6">
+                        <label for="Anio" class="form-label">Año</label>
+                        <input type="number" class="form-control" id="Anio" name="Anio" value="@Model.Anio" required />
+                        @Html.ValidationMessageFor(model => model.Anio, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <div class="row">
-                    
-                    <div class="col-md-4">
-                        <label for="anio" class="form-label">Año</label>
-                        <input type="number" class="form-control" id="anio">
+                <div class="row mb-3 align-items-end">
+                    <div class="col-md-6">
+                        <label for="IdPensumSeleccionado" class="form-label">Pensum (Carrera)</label>
+                        @Html.DropDownListFor(model => model.IdPensumSeleccionado, Model.ListaPensums, "Seleccione un Pensum", new { @class = "form-select", id = "IdPensumSeleccionado", required = "required" })
+                        @Html.ValidationMessageFor(model => model.IdPensumSeleccionado, "", new { @class = "text-danger" })
                     </div>
-                    <div class="col-md-4">
-                        <label for="estado" class="form-label">Estado</label>
-                        <select class="form-select" id="estado">
-                            <option>Consulta</option>
-                            <option>Inscripcion</option>
-                            <option>Cerrado</option>
-                        </select>
-                    </div>
+<!-- inicio en master -->
                     <div class="col-md-3">
                         <button type="submit" class="btn btn-success mt-3">Guardar</button>
                     </div>
+<!-- Inicio del cambio en rama de sergio-->
+
+                <div class="form-group">
+                    <label asp-for="Estado" class="control-label"></label>
+                    <select asp-for="Estado" asp-items="Model.ListaEstados" class="form-control">
+                        <option value="">-- Seleccione Estado --</option>
+                    </select>
+                    <span asp-validation-for="Estado" class="text-danger"></span>
                 </div>
-                
+
+                    
+                    <div class="col-md-2 d-grid gap-2">
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                    </div>
+                    
+<!-- fin del conflicto -->
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- Bloques de clases -->
+    <h3 class="mb-3">Bloques de clases</h3>
+
     <div class="card mb-4">
         <div class="card-header">
-            <h4>Bloques de clases</h4>
+            Agregar Bloque de Clase
         </div>
         <div class="card-body">
-            <form>
-                <div class="row">
-                    <div class="col-md-3">
-                        <label class="form-label">Materia</label>
-                        <select class="form-select">
-                            <option>Desarrollo del pensamiento matematico</option>
-                            <option>Logica de programacion</option>
-                            <option>Aplicaciones moviles basicas</option>
-                        </select>
+            @* Formulario para agregar un nuevo bloque de clase (usará AJAX) *@
+            <form id="formAgregarBloque" asp-action="AgregarBloque" asp-controller="Inscripcion" method="post">
+                @Html.AntiForgeryToken()
+                @* Campo oculto para enviar el ID de la inscripción actual al controlador *@
+                <input type="hidden" name="IdInscripcionActual" value="@Model.IdInscripcionActual" />
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="IdMateriaSeleccionada" class="form-label">Materia</label>
+                        @Html.DropDownListFor(model => model.IdMateriaSeleccionada, Model.ListaMaterias, "Seleccione una Materia", new { @class = "form-select", id = "IdMateriaSeleccionada", required = "required" })
+                        @Html.ValidationMessageFor(model => model.IdMateriaSeleccionada, "", new { @class = "text-danger" })
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Día de la semana</label>
-                        <select class="form-select">
-                            <option>Lunes</option>
-                            <option>Martes</option>
-                            <option>Miércoles</option>
-                            <option>Jueves</option>
-                            <option>Viernes</option>
-                            <option>Sábado</option>
-                            <option>Domingo</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Hora inicio</label>
-                        <input type="time" class="form-control">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Hora fin</label>
-                        <input type="time" class="form-control">
+                    <div class="col-md-6">
+                        <label for="DiaSemana" class="form-label">Día de la semana</label>
+                        @Html.DropDownListFor(model => model.DiaSemana, Model.ListaDiasSemana, "Seleccione un Día", new { @class = "form-select", id = "DiaSemana", required = "required" })
+                        @Html.ValidationMessageFor(model => model.DiaSemana, "", new { @class = "text-danger" })
                     </div>
                 </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="HoraInicioString" class="form-label">Hora inicio (HH:MM)</label>
+                        <input type="time" class="form-control" id="HoraInicioString" name="HoraInicioString" placeholder="Ej: 08:00" value="@Model.HoraInicioString" required />
+                        @Html.ValidationMessageFor(model => model.HoraInicioString, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6">
+                        <label for="HoraFinString" class="form-label">Hora fin (HH:MM)</label>
+                        <input type="time" class="form-control" id="HoraFinString" name="HoraFinString" placeholder="Ej: 09:50" value="@Model.HoraFinString" required />
+                        @Html.ValidationMessageFor(model => model.HoraFinString, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+<!-- inicio del conflicto, parte del master -->
                 <div class="row d-flex align-items-center">
                     <div class="col-md-3">
                         <label class="form-label">Grupo</label>
@@ -90,51 +128,83 @@
                             <option>DS02</option>
                             <option>DS10</option>
                         </select>
+<!-- inicio conflicto parte de sergio-->
+                <div class="row mb-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="IdGrupoSeleccionado" class="form-label">Grupo</label>
+                        @Html.DropDownListFor(model => model.IdGrupoSeleccionado, Model.ListaGrupos, "Seleccione un Grupo", new { @class = "form-select", id = "IdGrupoSeleccionado", required = "required" })
+                        @Html.ValidationMessageFor(model => model.IdGrupoSeleccionado, "", new { @class = "text-danger" })
+<!-- fin del conflicto-->
                     </div>
-                
-                    <div class="col-md-3" >
-                        <a href="#" class="btn btn-link">Nuevo grupo</a>
+                    <div class="col-md-2 d-flex align-items-center">
+                        <a href="#" class="btn btn-link p-0">Nuevo grup</a>
                     </div>
-                    <div class="col-md-3" >
-                        <button type="submit" class="btn btn-success">Agregar bloque</button>
+                     
+
+                    <div class="col-md-3 d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Agregar bloque</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Tabla de bloques de clases -->
-    <div class="card">
-        <div class="card-header">
-            <h4>Lista de Bloques de Clases</h4>
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Materia</th>
-                        <th>Grupo</th>
-                        <th>Día</th>
-                        <th>Hora inicio</th>
-                        <th>Hora fin</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Programación Estructurada</td>
-                        <td>DS01</td>
-                        <td>Lunes</td>
-                        <td>5:00pm</td>
-                        <td>8:50pm</td>
-                    </tr>
-                    <tr>
-                        <td>Pensamiento Matemático</td>
-                        <td>DS01</td>
-                        <td>Martes</td>
-                        <td>5:00am</td>
-                        <td>8:50am</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    @* Este DIV es donde se cargará la tabla de bloques de clase (se actualizará con AJAX) *@
+    <div id="bloquesDeClaseTablaContainer" class="table-responsive">
+        @* Aquí se renderizará la vista parcial con los datos iniciales de la tabla *@
+        @Html.Partial("_BloquesDeClaseTabla", Model)
     </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    } @* Esencial para la validación del cliente *@
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> @* Asegúrate que jQuery esté cargado *@
+
+    <script>
+        $(document).ready(function () {
+            // Cuando se envía el formulario "Agregar bloque"
+            $('#formAgregarBloque').submit(function (e) {
+                e.preventDefault(); // Detener el envío normal del formulario (para usar AJAX)
+
+                var currentInscripcionId = $('#IdInscripcionActual').val();
+                if (!currentInscripcionId || currentInscripcionId <= 0) {
+                    alert('Por favor, primero debe guardar la información de la inscripción (formulario superior).');
+                    return; // Detener la ejecución si no hay ID de inscripción
+                }
+
+               // if ($(this).valid()) { // Si el formulario es válido según las reglas de validación
+                    var formData = $(this).serialize(); // Convertir los datos del formulario a un formato que AJAX pueda enviar
+
+                    $.ajax({
+                        url: '@Url.Action("AgregarBloque", "Inscripcion")', // A dónde enviar la solicitud (Controlador y Acción)
+                        type: 'POST', // Tipo de solicitud: POST para enviar datos
+                        data: formData, // Los datos a enviar
+                        success: function (result) {
+                            // Cuando la solicitud AJAX es exitosa:
+                            // 'result' es lo que el controlador devuelve (nuestra vista parcial con la tabla actualizada)
+                            $('#bloquesDeClaseTablaContainer').html(result); // Reemplazar el contenido del DIV de la tabla
+
+                            // Limpiar los campos del formulario de agregar bloque después de un éxito
+                            $('#IdMateriaSeleccionada').val('');
+                            $('#DiaSemana').val('');
+                            $('#HoraInicioString').val('');
+                            $('#HoraFinString').val('');
+                            $('#IdGrupoSeleccionado').val('');
+
+                            // Puedes agregar aquí un mensaje de éxito visual (ej. un "toast" de Bootstrap)
+                            // Por ahora, el mensaje general de TempData del controlador ya se muestra.
+                        },
+                        error: function (xhr, status, error) {
+                            // Si hay un error en la solicitud AJAX
+                            console.error("Error al agregar bloque:", error);
+                            alert('Hubo un problema al agregar el bloque. Por favor, inténtelo de nuevo.');
+                        }
+                    });
+                //}
+            });
+        });
+    </script>
+}
