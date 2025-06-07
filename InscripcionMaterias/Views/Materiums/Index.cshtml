@@ -13,7 +13,9 @@
                 <h6 class="m-0 font-weight-bold text-primary">Nueva Materia</h6>
             </div>
             <div class="card-body">
-                <form asp-action="Create">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                     <div class="row">
                         <div class="col-md-8">
                             <div class="form-group">

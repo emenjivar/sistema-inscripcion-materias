@@ -1,0 +1,81 @@
+﻿@model InscripcionMaterias.Models.Pensum
+@{
+    var opcionesTipoCarrera = new List<string> { "Técnico", "Ingeniería" };
+}
+
+<form id="editPensumForm">
+    @Html.AntiForgeryToken()
+    <div class="modal-header">
+        <h5 class="modal-title">Editar Pensum</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <input type="hidden" name="Id" value="@Model.Id" />
+
+        <div class="form-group col-md-12">
+            <label for="Carrera">Carrera</label>
+            <input name="Carrera" class="form-control" value="@Model.Carrera" required />
+        </div>
+        
+        <div class="form-group col-md-6">
+            <label for="Carrera">Tipo carrera</label>
+            <select name="TipoCarrera" class="form-control" required>
+                <option value="">-- Seleccione --</option>
+                @for (int i = 0; i < opcionesTipoCarrera.Count; i++)
+                {
+                    var tipo = opcionesTipoCarrera[i];
+                    var selected = (Model.TipoCarrera == tipo) ? "selected" : "";
+                    @:<option value="@tipo" @selected>@tipo</option>
+                }
+            </select>       
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    </div>
+</form>
+
+<script>
+    function cargarTablaPensums() {
+        $.ajax({
+            url: '/Pensums/PensumTabla',
+            type: 'GET',
+            success: function (data) {
+                $('#pensumTablaContainer').html(data);
+                $('#dataTable').DataTable();
+            },
+            error: function () {
+                $('#pensumTablaContainer').html('<p>Error al cargar la tabla de carrera.</p>');
+            }
+        });
+    }
+
+    $('#editPensumForm').submit(function (e) {
+        e.preventDefault();
+
+        var formData = $(this).serialize();
+
+        $.ajax({
+            url: '/Pensums/Edit',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    $('#editPensumModal').modal('hide');
+                    Swal.fire('¡Actualizado!', 'El pensum ha sido modificado.', 'success').then(() => {
+                        cargarTablaPensums();
+                    });
+                } else {
+                    Swal.fire('Error', response.message, 'error');
+                }
+            },
+            error: function () {
+                Swal.fire('Error', 'No se pudo guardar el pensum.', 'error');
+            }
+        });
+    });
+</script>

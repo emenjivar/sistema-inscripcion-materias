@@ -1,0 +1,97 @@
+﻿@model IEnumerable<InscripcionMaterias.Models.Alumno>
+@{
+    ViewData["Title"] = "Alumnos";
+}
+
+<h1>Alumnos</h1>
+
+<div class="card shadow mb-4" id="alumnosTablaContainer">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Listado de Alumnos</h6>
+    </div>
+</div>
+
+<div class="modal fade" id="editAlumnoModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            cargarTablaAlumnos();
+        });
+
+        function cargarTablaAlumnos() {
+            $.ajax({
+                url: '/Alumnos/AlumnosTabla',
+                type: 'GET',
+                success: function (data) {
+                    $('#alumnosTablaContainer').html(data);
+                    $('#dataTable').DataTable({
+                        "language": {
+                            "search": "Buscar:",
+                            "lengthMenu": "Mostrar _MENU_ registros",
+                            "zeroRecords": "No se encontraron registros",
+                            "info": "Mostrando _PAGE_ de _PAGES_",
+                            "infoEmpty": "No hay registros disponibles",
+                            "infoFiltered": "(filtrado de _MAX_ registros totales)"
+                        }
+                    });
+                },
+                error: function () {
+                    $('#alumnosTablaContainer').html('<p>Error al cargar la tabla.</p>');
+                }
+            });
+        }
+
+        function editarAlumno(id) {
+            $.ajax({
+                url: `/Alumnos/Edit/${id}`,
+                type: 'GET',
+                success: function (html) {
+                    $('#editAlumnoModal .modal-content').html(html);
+                    $('#editAlumnoModal').modal('show');
+                },
+                error: function () {
+                    Swal.fire('Error', 'No se pudo cargar el formulario.', 'error');
+                }
+            });
+        }
+
+        function confirmDeleteAlumno(id, nombre) {
+            Swal.fire({
+                title: '¿Eliminar alumno?',
+                text: `¿Deseas eliminar al alumno: ${nombre}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/Alumnos/Delete/${id}`,
+                        type: 'DELETE',
+                        dataType: 'json',
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire('Eliminado', 'Alumno eliminado correctamente', 'success').then(() => {
+                                    cargarTablaAlumnos();
+                                });
+                            } else {
+                                Swal.fire('Error', response.message, 'error');
+                            }
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'No se pudo eliminar.', 'error');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

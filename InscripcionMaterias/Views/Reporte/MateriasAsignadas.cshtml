@@ -1,0 +1,183 @@
+﻿@model List<InscripcionMaterias.Models.PensumMateria>
+@{
+    int cantidadCiclos = ViewBag.CantidadCiclos ?? 0;
+    int cantidadMaterias = ViewBag.CantidadMaterias ?? 0;
+    string nombreCarrera = ViewBag.NombreCarrera;
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Pensum Académico - @nombreCarrera</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10pt;
+            margin: 0;
+            padding: 15px;
+            color: #333;
+        }
+
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+            .header h1 {
+                margin: 0;
+                font-size: 22px;
+                font-weight: 600;
+            }
+
+        .header-info {
+            display: flex;
+            justify-content: space-between; /* Cambiado a space-between para mejor distribución */
+            margin-top: 10px;
+            font-size: 9pt;
+            padding: 8px 0;
+        }
+
+            .header-info span {
+                white-space: nowrap; /* Evita saltos de línea */
+                margin: 0 10px; /* Espaciado entre elementos */
+            }
+
+        .pensum-table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 15px;
+            margin-top: 20px;
+        }
+
+        .ciclo-cell {
+            vertical-align: top;
+            width: @(Math.Round(100.0 / cantidadCiclos, 2))%;
+            min-width: 180px;
+            word-wrap: break-word;
+        }
+
+        .ciclo-container {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            height: 100%;
+            page-break-inside: avoid;
+        }
+
+        .ciclo-header {
+            background: #2c3e50;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 10pt;
+            border-radius: 5px 5px 0 0;
+            word-break: break-word;
+        }
+
+        .materia-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .materia-codigo {
+            font-weight: bold;
+            font-size: 9pt;
+            color: #2c3e50;
+            word-break: break-all;
+        }
+
+        .materia-nombre {
+            font-size: 9pt;
+            margin-top: 3px;
+            word-break: break-word;
+        }
+
+        .materia-uv {
+            font-size: 8pt;
+            color: #3498db;
+            font-weight: bold;
+            margin-top: 3px;
+        }
+
+        .materia-prereq {
+            font-size: 8pt;
+            color: #666;
+            font-style: italic;
+            margin-top: 3px;
+            word-break: break-word;
+        }
+
+        @@page {
+            size: A4 landscape;
+            margin: 1cm;
+        }
+
+        @@top-center {
+            content: "Pensum Académico - @nombreCarrera";
+            font-size: 10pt;
+        }
+
+        @@bottom-right {
+            content: "Página " counter(page) " de " counter(pages);
+            font-size: 8pt;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Pensum Académico</h1>
+        <div class="header-info">
+            <span><strong>Carrera:</strong> @nombreCarrera</span>
+            <span><strong>Total Materias:</strong> @cantidadMaterias</span>
+            <span><strong>Fecha:</strong> @DateTime.Now.ToString("dd/MM/yyyy")</span>
+        </div>
+    </div>
+
+    <table class="pensum-table">
+        <tr>
+            @for (int ciclo = 1; ciclo <= cantidadCiclos; ciclo++)
+            {
+                <td class="ciclo-cell">
+                    <div class="ciclo-container">
+                        <div class="ciclo-header">CICLO @ciclo</div>
+
+                        @{
+                            var materiasCiclo = Model.Where(m => m.CicloCurricular == ciclo).ToList();
+                        }
+
+                        @if (materiasCiclo.Any())
+                        {
+                            foreach (var materia in materiasCiclo)
+                            {
+                                <div class="materia-item">
+                                    <div class="materia-codigo" title="@materia.IdMateriaNavigation.Codigo">@materia.IdMateriaNavigation.Codigo</div>
+                                    <div class="materia-nombre">@materia.IdMateriaNavigation.Nombre</div>
+                                    <div class="materia-uv">UV: @materia.IdMateriaNavigation.UnidadesValorativas</div>
+                                    @if (materia.IdMateriaPrerequisito.HasValue)
+                                    {
+                                        <div class="materia-prereq" title="Prerreq: @materia.IdMateriaPrerequisitoNavigation?.Codigo">
+                                            Prerreq: @materia.IdMateriaPrerequisitoNavigation?.Codigo
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="materia-item" style="text-align: center; font-style: italic; color: #999;">
+                                No hay materias
+                            </div>
+                        }
+                    </div>
+                </td>
+            }
+        </tr>
+    </table>
+</body>
+</html>

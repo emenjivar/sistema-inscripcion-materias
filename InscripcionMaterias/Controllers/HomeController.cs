@@ -15,6 +15,10 @@ namespace InscripcionMaterias.Controllers
 
         public IActionResult Index()
         {
+            if (HttpContext.Session.GetString("Username") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             return View();
         }
 
@@ -22,6 +26,10 @@ namespace InscripcionMaterias.Controllers
 
         public IActionResult Privacy()
         {
+            if (HttpContext.Session.GetString("Username") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             return View();
         }
 

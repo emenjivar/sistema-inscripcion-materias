@@ -57,6 +57,11 @@
                         @Html.DropDownListFor(model => model.IdPensumSeleccionado, Model.ListaPensums, "Seleccione un Pensum", new { @class = "form-select", id = "IdPensumSeleccionado", required = "required" })
                         @Html.ValidationMessageFor(model => model.IdPensumSeleccionado, "", new { @class = "text-danger" })
                     </div>
+<!-- inicio en master -->
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-success mt-3">Guardar</button>
+                    </div>
+<!-- Inicio del cambio en rama de sergio-->
 
                 <div class="form-group">
                     <label asp-for="Estado" class="control-label"></label>
@@ -71,6 +76,7 @@
                         <button type="submit" class="btn btn-success">Guardar</button>
                     </div>
                     
+<!-- fin del conflicto -->
                 </div>
             </form>
         </div>
@@ -113,11 +119,22 @@
                         @Html.ValidationMessageFor(model => model.HoraFinString, "", new { @class = "text-danger" })
                     </div>
                 </div>
+<!-- inicio del conflicto, parte del master -->
+                <div class="row d-flex align-items-center">
+                    <div class="col-md-3">
+                        <label class="form-label">Grupo</label>
+                        <select class="form-select">
+                            <option>DS01</option>
+                            <option>DS02</option>
+                            <option>DS10</option>
+                        </select>
+<!-- inicio conflicto parte de sergio-->
                 <div class="row mb-3 align-items-end">
                     <div class="col-md-4">
                         <label for="IdGrupoSeleccionado" class="form-label">Grupo</label>
                         @Html.DropDownListFor(model => model.IdGrupoSeleccionado, Model.ListaGrupos, "Seleccione un Grupo", new { @class = "form-select", id = "IdGrupoSeleccionado", required = "required" })
                         @Html.ValidationMessageFor(model => model.IdGrupoSeleccionado, "", new { @class = "text-danger" })
+<!-- fin del conflicto-->
                     </div>
                     <div class="col-md-2 d-flex align-items-center">
                         <a href="#" class="btn btn-link p-0">Nuevo grup</a>
