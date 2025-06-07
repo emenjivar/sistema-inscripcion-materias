@@ -51,7 +51,7 @@
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
 
-                        @if (rol == "admin")
+                        @if (rol.ToLower() == "admin")
 
                         {
                             <li class="nav-item">
@@ -63,16 +63,19 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Pensums" asp-action="Index">Carreras</a>
                             </li>
-                                                    <li class="nav-item">
+                        
+                            <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Usuarios" asp-action="Index">Usuarios</a>
-                            </li>                        }
+                            </li>
+                        }
                        
-                        @if (rol == "alumno")
+                        @if (rol.ToLower() == "alumno")
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="PensumMaterias" asp-action="MiPensum">Pensum</a>
                             </li>
-                                                }
+                        
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Account" asp-action="Logout">Cerrar Sesión (@username)</a>
                         </li>
