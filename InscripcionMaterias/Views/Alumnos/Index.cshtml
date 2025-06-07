@@ -6,9 +6,6 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -23,9 +20,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IdPensum)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdUsuario)
             </th>
             <th></th>
         </tr>
@@ -46,14 +40,33 @@
                 @Html.DisplayFor(modelItem => item.IdPensum)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdUsuario)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id" title="Editar">
+                        <i class="fa fa-edit fa-lg text-primary"></i>
+                </a>
+                    <a asp-action="Details" asp-route-id="@item.Id" title="Detalles">
+                        <i class="fas fa-search fa-lg text-success"></i>
+                </a>
+                <a asp-action="Delete" asp-route-id="@item.Id"  title="Eliminar">
+                        <i class="fas fa-trash-alt fa-lg text-danger"></i>
+                </a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+                $('.table').DataTable({
+                    "language": {
+                        "search": "Buscar:",
+                        "lengthMenu": "Mostrar _MENU_ registros por página",
+                        "zeroRecords": "No se encontraron registros",
+                        "info": "Mostrando página _PAGE_ de _PAGES_",
+                        "infoEmpty": "No hay registros disponibles",
+                        "infoFiltered": "(filtrado de _MAX_ registros totales)"
+                    }
+                });
+            });
+    </script>
+}
