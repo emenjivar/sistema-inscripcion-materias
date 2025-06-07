@@ -55,7 +55,7 @@ namespace InscripcionMaterias.Controllers
             {
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
-                if (usuario.Rol == "Alumno")
+                if (usuario.Rol.ToLower() == "alumno")
                 {
                     var alumno = new Alumno
                     {
