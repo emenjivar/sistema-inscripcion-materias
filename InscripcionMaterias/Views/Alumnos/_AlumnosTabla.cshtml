@@ -1,0 +1,37 @@
+﻿@model IEnumerable<InscripcionMaterias.Models.Alumno>
+
+<div class="card-body">
+    <div class="table-responsive">
+        <table id="dataTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Carnet</th>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Pensum</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in Model)
+                {
+                    <tr>
+                        <td>@a.Carnet</td>
+                        <td>@a.Nombres</td>
+                        <td>@a.Apellidos</td>
+                        <td>@a.IdPensumNavigation?.Carrera</td>
+                        <td>
+                            <a onclick="editarAlumno(@a.Id)" title="Editar">
+                                <i class="fa fa-edit fa-lg text-primary"></i>
+                            </a>
+                            &nbsp;
+                            <a onclick="confirmDeleteAlumno(@a.Id, '@a.Nombres')" title="Eliminar">
+                                <i class="fa fa-trash fa-lg text-danger"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
