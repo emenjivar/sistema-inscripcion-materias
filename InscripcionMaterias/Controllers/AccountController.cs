@@ -55,10 +55,38 @@ namespace InscripcionMaterias.Controllers
                         return View(model);
                     }
 
+                    // Guardar datos comunes
                     HttpContext.Session.SetString("Username", usuario.Username);
                     HttpContext.Session.SetString("Rol", usuario.Rol);
-                    HttpContext.Session.SetString("UserId", usuario.Id.ToString());
+                    HttpContext.Session.SetInt32("UserId", usuario.Id);
 
+                    // Si es alumno, buscar su ID de alumno y guardarlo en sesión
+                    if (usuario.Rol.ToLower() == "alumno")
+                    {
+                        var alumno = await _context.Alumnos
+                            .FirstOrDefaultAsync(a => a.IdUsuario == usuario.Id);
+
+                        if (alumno != null)
+                        {
+                            HttpContext.Session.SetInt32("IdAlumno", alumno.Id);
+                        }
+                        else
+                        {
+                            // Si no existe el alumno, puedes redirigir con error o manejarlo como creas conveniente
+                            ModelState.AddModelError("", "No se encontró el registro de alumno asociado a este usuario.");
+                            return View(model);
+                        }
+
+                        return RedirectToAction("Index", "Home");
+                    }
+
+                    // Si es admin, redirigir a panel de administración
+                    if (usuario.Rol.ToLower() == "admin")
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+
+                    // Si el rol es desconocido, redirigir a home
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -69,6 +97,7 @@ namespace InscripcionMaterias.Controllers
 
             return View(model);
         }
+
 
         // GET: /Account/Logout (Para cerrar sesión)
         [HttpGet]

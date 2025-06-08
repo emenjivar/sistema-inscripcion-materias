@@ -1,0 +1,83 @@
+﻿@model InscripcionMaterias.Models.ViewModels.InscripcionViewModel
+
+@{
+    ViewData["Title"] = "Inscripcion de Materias";
+}
+
+<h2>Inscripcion de materias</h2>
+
+<div style="margin-bottom: 20px;">
+    <strong>Alumno:</strong> @Model.NombreAlumno<br />
+    <strong>carnet:</strong> @Model.Carnet<br />
+    <strong>Ciclo:</strong> I, @Model.Anio
+</div>
+
+<form asp-action="GuardarInscripcion" method="post">
+    <table>
+        <thead>
+            <tr>
+                <th>Materia</th>
+                <th>Grupo</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < 5; i++) // puedes cambiar el número de filas dinámicamente
+            {
+                <tr>
+                    <td>
+                        <select name="MateriasSeleccionadas[@i].MateriaNombre" class="form-control">
+                            <option value="">-- Seleccionar materia --</option>
+                            @foreach (var materia in Model.MateriasDisponibles)
+                            {
+                                <option value="@materia.Nombre">@materia.Nombre</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <select name="MateriasSeleccionadas[@i].Grupo" class="form-control">
+                            <option value="">-- Seleccionar grupo --</option>
+                            @foreach (var grupo in Model.GruposDisponibles)
+                            {
+                                <option value="@grupo.Id">@grupo.Codigo</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <a href="#" class="text-primary">deseleccionar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary mt-3">Guardar inscripción</button>
+</form>
+
+<hr />
+
+<h4>Materias seleccionadas</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Materia</th>
+            <th>Grupo</th>
+            <th>Horarios</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.MateriasSeleccionadas)
+        {
+            <tr>
+                <td>@item.MateriaNombre</td>
+                <td>@item.Grupo</td>
+                <td>
+                    @foreach (var horario in item.Horarios)
+                    {
+                        <div>@horario</div>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
