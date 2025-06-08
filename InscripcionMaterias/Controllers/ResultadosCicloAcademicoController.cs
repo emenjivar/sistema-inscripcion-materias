@@ -278,7 +278,31 @@ namespace InscripcionMaterias.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> GuardarResultados([FromBody] ResultadoCierreInputViewModel input)
+        {
+            if (input == null || input.Resultados == null || !input.Resultados.Any())
+            {
+                return BadRequest("Datos inválidos.");
+            }
 
+            foreach (var alumno in input.Resultados)
+            {
+                foreach (var idMateria in alumno.MateriasAprobadas)
+                {
+                    var nuevoResultado = new ResultadoCicloAcademico
+                    {
+                        IdAlumno = alumno.IdAlumno,
+                        IdMateria = idMateria,
+                        Aprobado = true // Siempre se guarda como aprobado porque fueron seleccionadas
+                    };
 
+                    _context.ResultadoCicloAcademicos.Add(nuevoResultado);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { mensaje = "Resultados guardados exitosamente." });
+        }
     }
 }
