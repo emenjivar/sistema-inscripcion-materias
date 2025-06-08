@@ -1,39 +1,4 @@
-﻿/*using InscripcionMaterias.Models;
-using Microsoft.AspNetCore.Mvc;
-
-namespace InscripcionMaterias.Controllers
-{
-    public class InscripcionController : Controller
-    {
-        private readonly GestionDbContext _context;
-
-        public InscripcionController(GestionDbContext context)
-        {
-            _context = context;
-        }
-
-        public IActionResult Index()
-        {
-            ViewBag.Pensums = _context.Pensums.ToList();
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Guardar(Inscripcion model)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Inscripcions.Add(model);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View("Index", model);
-        }
-
-    }
-}
-*/
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Linq;
@@ -55,6 +20,35 @@ namespace InscripcionMaterias.Controllers
             _context = context;
         }
 
+
+
+
+        // ACCIÓN: Para mostrar la lista de inscripciones
+        public async Task<IActionResult> ListaInscripciones()
+        {
+            var viewModel = new ListaInscripcionesViewModel();
+
+            viewModel.Inscripciones = await _context.Inscripcions
+                .Include(i => i.IdPensumNavigation) //  cargar el Pensum para obtener el nombre de la carrera
+                .Select(i => new InscripcionEnListaViewModel
+                {
+                    Id = i.Id,
+                    CicloAcademico = i.CicloAcademico,
+                    Anio = i.Anio,
+                    CarreraPensum = i.IdPensumNavigation != null ? i.IdPensumNavigation.Carrera : "N/A", // Obtén el nombre de la carrera
+                    Estado = i.Estado,
+                    // FechaCreacion = i.FechaCreacion // ¡ELIMINADO! Tu entidad Inscripcion no tiene FechaCreacion
+                })
+                .OrderByDescending(i => i.Anio)
+                .ThenByDescending(i => i.CicloAcademico)
+                .ToListAsync();
+
+            return View(viewModel); // Retorna la vista ListaInscripciones.cshtml
+        }
+
+
+
+
         // GET: Inscripcion/Index (Esta acción cargará el formulario AperturaInscripciones.cshtml)
         // La vista AperturaInscripciones.cshtml es la que realmente mostrará el formulario
         // y necesitará el SimpleInscripcionViewModel.
@@ -63,6 +57,9 @@ namespace InscripcionMaterias.Controllers
             var viewModel = new SimpleInscripcionViewModel();
             await CargarDropdownsParaViewModel(viewModel); //carga los estados fijos
 
+           
+            
+            
             // --- Cargar datos para los Dropdowns desde la base de datos ---
             // Esto se carga SIEMPRE que se acceda a este formulario
             viewModel.ListaPensums = await _context.Pensums
@@ -169,7 +166,7 @@ namespace InscripcionMaterias.Controllers
                 await _context.SaveChangesAsync();
                 TempData["SuccessMessage"] = "Datos de inscripción guardados correctamente.";
                 // Redirige a la misma acción Index de InscripcionController, que renderizará el formulario con los datos actualizados
-                return RedirectToAction(nameof(Index), new { idInscripcion = inscripcion.Id });
+                return RedirectToAction(nameof(ListaInscripciones));
             }
 
             // Si hay errores de validación, recargar los dropdowns y bloques antes de volver a la vista
@@ -290,6 +287,40 @@ namespace InscripcionMaterias.Controllers
                 new SelectListItem { Value = "Inscripcion", Text = "Inscripción" }, // Puedes ajustar el "Text" para mostrar
                 new SelectListItem { Value = "Cerrado", Text = "Cerrado" }
             };
+
+            //Cargar Días de la Semana
+            viewModel.ListaDiasSemana = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "Lunes", Text = "Lunes" },
+                new SelectListItem { Value = "Martes", Text = "Martes" },
+                new SelectListItem { Value = "Miércoles", Text = "Miércoles" },
+                new SelectListItem { Value = "Jueves", Text = "Jueves" },
+                new SelectListItem { Value = "Viernes", Text = "Viernes" },
+                new SelectListItem { Value = "Sábado", Text = "Sábado" }
+            };
+
         }
+
+
+
+        [HttpGet]
+        public async Task<JsonResult> GetGruposAsSelectList()
+        {
+            // Coloca el breakpoint aquí:
+            var grupos = await _context.GrupoClases
+                                       .OrderBy(g => g.Codigo)
+                                       .Select(g => new SelectListItem
+                                       {
+                                           Value = g.Id.ToString(),
+                                           Text = g.Codigo
+                                       })
+                                       .ToListAsync();
+            return Json(grupos);
+        }
+
+
+
+
+
     }
 }

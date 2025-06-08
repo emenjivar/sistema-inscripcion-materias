@@ -27,7 +27,7 @@
 
 
 
-    <div class="card mb-4">
+    <div class="card shadow mb-4">
         <div class="card-header">
             Datos de Inscripción
         </div>
@@ -57,10 +57,7 @@
                         @Html.DropDownListFor(model => model.IdPensumSeleccionado, Model.ListaPensums, "Seleccione un Pensum", new { @class = "form-select", id = "IdPensumSeleccionado", required = "required" })
                         @Html.ValidationMessageFor(model => model.IdPensumSeleccionado, "", new { @class = "text-danger" })
                     </div>
-<!-- inicio en master -->
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-success mt-3">Guardar</button>
-                    </div>
+                  
 <!-- Inicio del cambio en rama de sergio-->
 
                 <div class="form-group">
@@ -83,8 +80,8 @@
     </div>
 
     <h3 class="mb-3">Bloques de clases</h3>
-
-    <div class="card mb-4">
+    
+    <div class="card shadow mb-4">
         <div class="card-header">
             Agregar Bloque de Clase
         </div>
@@ -119,27 +116,24 @@
                         @Html.ValidationMessageFor(model => model.HoraFinString, "", new { @class = "text-danger" })
                     </div>
                 </div>
-<!-- inicio del conflicto, parte del master -->
-                <div class="row d-flex align-items-center">
-                    <div class="col-md-3">
-                        <label class="form-label">Grupo</label>
-                        <select class="form-select">
-                            <option>DS01</option>
-                            <option>DS02</option>
-                            <option>DS10</option>
-                        </select>
-<!-- inicio conflicto parte de sergio-->
+
+
                 <div class="row mb-3 align-items-end">
                     <div class="col-md-4">
                         <label for="IdGrupoSeleccionado" class="form-label">Grupo</label>
-                        @Html.DropDownListFor(model => model.IdGrupoSeleccionado, Model.ListaGrupos, "Seleccione un Grupo", new { @class = "form-select", id = "IdGrupoSeleccionado", required = "required" })
-                        @Html.ValidationMessageFor(model => model.IdGrupoSeleccionado, "", new { @class = "text-danger" })
-<!-- fin del conflicto-->
-                    </div>
-                    <div class="col-md-2 d-flex align-items-center">
-                        <a href="#" class="btn btn-link p-0">Nuevo grup</a>
+                        <div ="input-group">
+                          
+                            @Html.DropDownListFor(model => model.IdGrupoSeleccionado, Model.ListaGrupos, "Seleccione un Grupo", new { @class = "form-select", id = "IdGrupoSeleccionado", required = "required" })
+                            @Html.ValidationMessageFor(model => model.IdGrupoSeleccionado, "", new { @class = "text-danger" })
+
+                            <button type="button" class="btn btn-outline-secondary" id="btnNuevoGrupoModal">
+                                <i class="bi bi-plus-lg"></i> Nuevo Grupo
+                            </button>
+                        
+                        </div>
                     </div>
                      
+
 
                     <div class="col-md-3 d-grid gap-2">
                         <button type="submit" class="btn btn-primary">Agregar bloque</button>
@@ -149,19 +143,43 @@
         </div>
     </div>
 
-    @* Este DIV es donde se cargará la tabla de bloques de clase (se actualizará con AJAX) *@
-    <div id="bloquesDeClaseTablaContainer" class="table-responsive">
-        @* Aquí se renderizará la vista parcial con los datos iniciales de la tabla *@
-        @Html.Partial("_BloquesDeClaseTabla", Model)
+    @* Este DIV es donde se carga la tabla de bloques de clase (se actualizará con AJAX) *@
+   <div class="card shadow mb-4">
+        <div id="bloquesDeClaseTablaContainer" class="table-responsive">
+            @* Aquí se renderizará la vista parcial con los datos iniciales de la tabla *@
+            @Html.Partial("_BloquesDeClaseTabla", Model)
+        </div>
     </div>
 </div>
 
+
+
+<div class="modal fade" id="crearGrupoModal" tabindex="-1" aria-labelledby="crearGrupoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearGrupoModalLabel">Crear Nuevo Grupo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalBodyCrearGrupo">
+                Cargando formulario...
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+
 @section Scripts {
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> @* Asegúrate que jQuery esté cargado *@
+
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     } @* Esencial para la validación del cliente *@
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> @* Asegúrate que jQuery esté cargado *@
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function () {
@@ -175,36 +193,143 @@
                     return; // Detener la ejecución si no hay ID de inscripción
                 }
 
-               // if ($(this).valid()) { // Si el formulario es válido según las reglas de validación
-                    var formData = $(this).serialize(); // Convertir los datos del formulario a un formato que AJAX pueda enviar
+                // if ($(this).valid()) { // Si el formulario es válido según las reglas de validación
+                var formData = $(this).serialize(); // Convertir los datos del formulario a un formato que AJAX pueda enviar
 
-                    $.ajax({
-                        url: '@Url.Action("AgregarBloque", "Inscripcion")', // A dónde enviar la solicitud (Controlador y Acción)
-                        type: 'POST', // Tipo de solicitud: POST para enviar datos
-                        data: formData, // Los datos a enviar
-                        success: function (result) {
-                            // Cuando la solicitud AJAX es exitosa:
-                            // 'result' es lo que el controlador devuelve (nuestra vista parcial con la tabla actualizada)
-                            $('#bloquesDeClaseTablaContainer').html(result); // Reemplazar el contenido del DIV de la tabla
+                $.ajax({
+                    url: '@Url.Action("AgregarBloque", "Inscripcion")', // A dónde enviar la solicitud (Controlador y Acción)
+                    type: 'POST', // Tipo de solicitud: POST para enviar datos
+                    data: formData, // Los datos a enviar
+                    success: function (result) {
+                        // Cuando la solicitud AJAX es exitosa:
+                        // 'result' es lo que el controlador devuelve (nuestra vista parcial con la tabla actualizada)
+                        $('#bloquesDeClaseTablaContainer').html(result); // Reemplazar el contenido del DIV de la tabla
 
-                            // Limpiar los campos del formulario de agregar bloque después de un éxito
-                            $('#IdMateriaSeleccionada').val('');
-                            $('#DiaSemana').val('');
-                            $('#HoraInicioString').val('');
-                            $('#HoraFinString').val('');
-                            $('#IdGrupoSeleccionado').val('');
+                        // Limpiar los campos del formulario de agregar bloque después de un éxito
+                        $('#IdMateriaSeleccionada').val('');
+                        $('#DiaSemana').val('');
+                        $('#HoraInicioString').val('');
+                        $('#HoraFinString').val('');
+                        $('#IdGrupoSeleccionado').val('');
 
-                            // Puedes agregar aquí un mensaje de éxito visual (ej. un "toast" de Bootstrap)
-                            // Por ahora, el mensaje general de TempData del controlador ya se muestra.
-                        },
-                        error: function (xhr, status, error) {
-                            // Si hay un error en la solicitud AJAX
-                            console.error("Error al agregar bloque:", error);
-                            alert('Hubo un problema al agregar el bloque. Por favor, inténtelo de nuevo.');
-                        }
-                    });
-                //}
+                        // Puedes agregar aquí un mensaje de éxito visual (ej. un "toast" de Bootstrap)
+                        // Por ahora, el mensaje general de TempData del controlador ya se muestra.
+                    },
+                    error: function (xhr, status, error) {
+                        // Si hay un error en la solicitud AJAX
+                        console.error("Error al agregar bloque:", error);
+                        alert('Hubo un problema al agregar el bloque. Por favor, inténtelo de nuevo.');
+                    }
+                });
+                //} // Aquí cierra la llave comentada del `if ($(this).valid())`
             });
-        });
+
+            // --- INICIO DE CÓDIGO PARA EL MODAL DE GRUPO ---
+
+            // Manejar el clic del botón "Nuevo" para abrir el modal de grupo
+            $('#btnNuevoGrupoModal').on('click', function () {
+                // Limpiar cualquier contenido anterior y mostrar mensaje de carga
+                $('#modalBodyCrearGrupo').html('Cargando formulario...');
+
+                // Cargar el formulario parcial de creación de grupo vía AJAX
+                $.ajax({
+                    url: '@Url.Action("_CrearGrupoModal", "Grupo")', // URL a la nueva acción del controlador Grupo
+                    type: 'GET',
+                    success: function (data) {
+                        $('#modalBodyCrearGrupo').html(data);
+                        // Revalidar el formulario después de cargar el contenido
+                        // Esto es crucial para que las validaciones de jQuery Unobtrusive funcionen en el contenido cargado dinámicamente
+                        var form = $('#modalBodyCrearGrupo').find('form');
+                        if (form.length > 0) {
+                            // Desinstalar y reinstalar validación para el nuevo contenido
+                            form.removeData("validator");
+                            form.removeData("unobtrusiveValidation");
+                            $.validator.unobtrusive.parse(form);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $('#modalBodyCrearGrupo').html('<div class="alert alert-danger">Error al cargar el formulario del grupo: ' + error + '</div>');
+                        console.error("Error al cargar formulario de grupo:", error, xhr.responseText);
+                    }
+                });
+
+                // Mostrar el modal
+                var crearGrupoModal = new bootstrap.Modal(document.getElementById('crearGrupoModal'));
+                crearGrupoModal.show();
+            });
+
+            // Manejar el envío del formulario DENTRO del modal vía AJAX
+            // Se usa delegación de eventos porque el formulario se carga dinámicamente
+            $('#modalBodyCrearGrupo').on('submit', 'form', function (event) {
+                event.preventDefault(); // Evitar el envío normal del formulario
+
+                var form = $(this);
+                // Si el formulario no es válido según jQuery Validate, no hacer AJAX
+                if (!form.valid()) {
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("_GuardarGrupoModal", "Grupo")', // URL a la acción POST AJAX del controlador Grupo
+                    type: 'POST',
+                    data: form.serialize(), // Serializar los datos del formulario
+                    success: function (response) {
+                        if (response.success) {
+                            // Cierra el modal
+                            var modalInstance = bootstrap.Modal.getInstance(document.getElementById('crearGrupoModal'));
+                            modalInstance.hide();
+
+                            // Muestra un mensaje de éxito (SweetAlert2)
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Éxito',
+                                text: response.message,
+                                timer: 3000,
+                                showConfirmButton: false
+                            });
+
+                            // Recargar el dropdown de Grupos con el nuevo grupo
+                            $.ajax({
+                                url: '@Url.Action("GetGruposAsSelectList", "Inscripcion")', // Asume que tienes esta acción o crea una similar en InscripcionController
+                                type: 'GET',
+                                success: function (grupos) {
+                                    var selectGrupo = $('#IdGrupoSeleccionado');
+                                    selectGrupo.empty(); // Limpiar opciones existentes
+                                    $.each(grupos, function (i, grupo) {
+                                        selectGrupo.append($('<option></option>').val(grupo.value).text(grupo.text));
+                                    });
+                                    // Seleccionar el nuevo grupo si es posible
+                                    if (response.newGroupId) {
+                                        selectGrupo.val(response.newGroupId);
+                                    }
+                                }
+                            });
+
+                        } else {
+                            // Si el servidor devolvió errores de validación (ej. código duplicado)
+                            // La respuesta 'response' contendrá el HTML del formulario con los errores
+                            $('#modalBodyCrearGrupo').html(response); // Inyecta el formulario con errores
+                            // Revalidar el formulario después de cargar el contenido con errores
+                            var updatedForm = $('#modalBodyCrearGrupo').find('form');
+                            if (updatedForm.length > 0) {
+                                updatedForm.removeData("validator");
+                                updatedForm.removeData("unobtrusiveValidation");
+                                $.validator.unobtrusive.parse(updatedForm);
+                            }
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Ocurrió un error al guardar el grupo. Intente de nuevo.'
+                        });
+                        console.error("Error al guardar grupo por AJAX:", error, xhr.responseText);
+                    }
+                });
+            });
+            // --- FIN DE CÓDIGO PARA EL MODAL DE GRUPO ---
+
+        }); // <--- Cierra el $(document).ready(function() {
     </script>
 }
