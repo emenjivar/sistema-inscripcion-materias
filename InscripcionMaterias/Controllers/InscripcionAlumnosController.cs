@@ -202,21 +202,82 @@ namespace InscripcionMaterias.Controllers
                 HttpContext.Session.SetString("Rol", "alumno");
             }
 
+            var bloquesHorarios = _context.BloqueHorarioMaterials
+            .Include(b => b.IdMateriaNavigation)
+            .Include(b => b.IdGrupoNavigation)
+            .Select(b => new GrupoMateriaHorarioViewModel
+            {
+                IdBloqueHorarioMateria = b.Id,
+                MateriaNombre = b.IdMateriaNavigation.Nombre,
+                GrupoCodigo = b.IdGrupoNavigation.Codigo,
+                HorarioDescripcion = $"{b.DiaSemana} {b.HoraInicio} - {b.HoraFin}"
+            })
+            .ToList();
+
+            var inscripcionesAlumno = _context.InscripcionAlumnos
+            .Include(i => i.IdBloqueHorarioMateriaNavigation)
+                .ThenInclude(b => b.IdMateriaNavigation)
+            .Include(i => i.IdBloqueHorarioMateriaNavigation)
+                .ThenInclude(b => b.IdGrupoNavigation)
+            .Where(i => i.IdAlumno == alumno.Id)
+            .ToList();
+
+            var materiasSeleccionadas = inscripcionesAlumno.Select(i => new InscripcionSeleccionadaViewModel
+            {
+                MateriaNombre = i.IdBloqueHorarioMateriaNavigation.IdMateriaNavigation.Nombre,
+                Grupo = i.IdBloqueHorarioMateriaNavigation.IdGrupoNavigation.Codigo,
+                Horarios = new List<string>
+                    {
+                        $"{i.IdBloqueHorarioMateriaNavigation.DiaSemana} {i.IdBloqueHorarioMateriaNavigation.HoraInicio} - {i.IdBloqueHorarioMateriaNavigation.HoraFin}"
+                    },
+                IdBloqueHorarioMateria = i.IdBloqueHorarioMateria
+            }).ToList();
+
+
             var model = new InscripcionViewModel
             {
                 NombreAlumno = alumno.Nombres,
                 Carnet = alumno.Carnet,
-                CicloAcademico = 1, // Esto probablemente deba venir de una tabla o lógica
+                CicloAcademico = 1,
                 Anio = 2025,
                 MateriasDisponibles = _context.Materia.ToList(),
                 GruposDisponibles = _context.GrupoClases.ToList(),
-                MateriasSeleccionadas = new List<InscripcionSeleccionadaViewModel>()
+                GrupoMateriaHorarios = bloquesHorarios,
+                MateriasSeleccionadas = materiasSeleccionadas
             };
+
+
 
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GuardarInscripcion(InscripcionViewModel model)
+        {
+            int? idAlumno = HttpContext.Session.GetInt32("IdAlumno");
+            if (idAlumno == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
+            foreach (var seleccion in model.MateriasSeleccionadas)
+            {
+                if (seleccion.IdBloqueHorarioMateria == 0)
+                    continue; // ignorar líneas vacías
+
+                var inscripcion = new InscripcionAlumno
+                {
+                    IdAlumno = idAlumno.Value,
+                    IdBloqueHorarioMateria = seleccion.IdBloqueHorarioMateria
+                };
+
+                _context.InscripcionAlumnos.Add(inscripcion);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Inscripcion));
+        }
 
     }
 }
