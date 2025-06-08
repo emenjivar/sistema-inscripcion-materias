@@ -1,0 +1,65 @@
+﻿@model InscripcionMaterias.Models.ViewModels.FiltroCierreCicloViewModel
+
+@{
+    ViewData["Title"] = "Cerrar Ciclo";
+}
+
+<h2>Cierre de Ciclo Académico</h2>
+
+<form asp-action="CerrarCiclo" method="post">
+    <div class="row">
+        <div class="form-group col-4">
+            <label>Pensum</label>
+            @Html.DropDownListFor(m => m.IdPensum, Model.Pensums, "Seleccione un pensum", new { @class = "form-control" })
+        </div>
+        <div class="form-group col-4">
+            <label>Ciclo Académico</label>
+            @Html.DropDownListFor(m => m.CicloAcademico, Model.Ciclos, "Seleccione un ciclo", new { @class = "form-control" })
+        </div>
+        <div class="form-group col-4">
+            <label>Año</label>
+            @Html.DropDownListFor(m => m.Anio, Model.Anios, "Seleccione un año", new { @class = "form-control" })
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Buscar</button>
+</form>
+
+@if (Model.Resultados != null && Model.Resultados.Any())
+{
+    <hr />
+    <h3>Resultados</h3>
+    <table class="table table-bordered table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Alumno</th>
+                <th>Materias</th>
+                <th>Aprobación</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var alumno in Model.Resultados)
+            {
+                <tr>
+                    <td>@alumno.NombreAlumno</td>
+                    <td>
+                        <ul>
+                            @foreach (var materia in alumno.Materias)
+                            {
+                                <li>@materia.NombreMateria</li>
+                            }
+                        </ul>
+                    </td>
+                    <td>
+                        @foreach (var materia in alumno.Materias)
+                        {
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="Aprobadas[@alumno.IdAlumno][@materia.IdMateria]" id="check_@($"{alumno.IdAlumno}_{materia.IdMateria}")" />
+                                <label class="form-check-label" for="check_@($"{alumno.IdAlumno}_{materia.IdMateria}")">Aprobada</label>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
