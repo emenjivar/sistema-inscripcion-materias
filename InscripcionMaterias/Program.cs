@@ -20,17 +20,6 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true; // La cookie de sesión es esencial para la funcionalidad
 });
 
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Define el tiempo de inactividad de la sesión
-    options.Cookie.HttpOnly = true; // Hace la cookie de sesión solo accesible por el servidor
-    options.Cookie.IsEssential = true; // Marca la cookie como esencial (necesaria para el funcionamiento de la app)
-});
-
-
-
-
-
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -44,8 +33,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseSession();
-
 app.UseSession();
 
 app.UseAuthorization();
