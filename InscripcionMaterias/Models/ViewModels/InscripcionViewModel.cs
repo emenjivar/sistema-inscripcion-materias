@@ -11,6 +11,8 @@
         public List<GrupoClase> GruposDisponibles { get; set; } = new();
         public List<InscripcionSeleccionadaViewModel> MateriasSeleccionadas { get; set; } = new();
         public List<GrupoMateriaHorarioViewModel> GrupoMateriaHorarios { get; set; } = new();
+        public int SelectsDisponibles { get; set; }
+
     }
 
     public class InscripcionSeleccionadaViewModel

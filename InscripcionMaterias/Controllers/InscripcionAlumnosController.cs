@@ -209,6 +209,7 @@ namespace InscripcionMaterias.Controllers
             {
                 IdBloqueHorarioMateria = b.Id,
                 MateriaNombre = b.IdMateriaNavigation.Nombre,
+                IdMateria = b.IdMateriaNavigation.Id,
                 GrupoCodigo = b.IdGrupoNavigation.Codigo,
                 HorarioDescripcion = $"{b.DiaSemana} {b.HoraInicio} - {b.HoraFin}"
             })
@@ -233,17 +234,32 @@ namespace InscripcionMaterias.Controllers
                 IdBloqueHorarioMateria = i.IdBloqueHorarioMateria
             }).ToList();
 
+            //Calculando cuantas materias mas se pueden inscribir
+            int selectsDisponibles = 5 - materiasSeleccionadas.Count;
+            if (selectsDisponibles < 0)
+                selectsDisponibles = 0;
+
+            // Obtener la inscripción activa
+            var inscripcionActiva = _context.Inscripcions
+                .FirstOrDefault(i => i.Estado.ToLower() == "inscripcion");
+
+            if (inscripcionActiva == null)
+            {
+                TempData["Error"] = "No hay un proceso de inscripción activo en este momento.";
+                return RedirectToAction("Index", "Home");
+            }
 
             var model = new InscripcionViewModel
             {
                 NombreAlumno = alumno.Nombres,
                 Carnet = alumno.Carnet,
-                CicloAcademico = 1,
-                Anio = 2025,
+                CicloAcademico = inscripcionActiva.CicloAcademico,
+                Anio = inscripcionActiva.Anio,
                 MateriasDisponibles = _context.Materia.ToList(),
                 GruposDisponibles = _context.GrupoClases.ToList(),
                 GrupoMateriaHorarios = bloquesHorarios,
-                MateriasSeleccionadas = materiasSeleccionadas
+                MateriasSeleccionadas = materiasSeleccionadas,
+                SelectsDisponibles = selectsDisponibles
             };
 
 
@@ -257,27 +273,80 @@ namespace InscripcionMaterias.Controllers
         {
             int? idAlumno = HttpContext.Session.GetInt32("IdAlumno");
             if (idAlumno == null)
-            {
                 return RedirectToAction("Login", "Account");
+
+            // Obtener inscripciones actuales del alumno
+            var inscripcionesActuales = _context.InscripcionAlumnos
+                .Include(i => i.IdBloqueHorarioMateriaNavigation)
+                    .ThenInclude(b => b.IdMateriaNavigation)
+                .Where(i => i.IdAlumno == idAlumno.Value)
+                .ToList();
+
+            if (inscripcionesActuales.Count >= 5)
+            {
+                TempData["Error"] = "Ya has inscrito el número máximo de materias permitidas.";
+                return RedirectToAction(nameof(Inscripcion));
             }
 
-            foreach (var seleccion in model.MateriasSeleccionadas)
-            {
-                if (seleccion.IdBloqueHorarioMateria == 0)
-                    continue; // ignorar líneas vacías
+            int disponibles = 5 - inscripcionesActuales.Count;
 
-                var inscripcion = new InscripcionAlumno
+            var nuevosBloquesIds = model.MateriasSeleccionadas
+                .Where(s => s.IdBloqueHorarioMateria != 0)
+                .Select(s => s.IdBloqueHorarioMateria)
+                .Distinct()
+                .ToList();
+
+            // Cargar todos los bloques seleccionados con sus relaciones
+            var bloquesSeleccionados = _context.BloqueHorarioMaterials
+                .Where(b => nuevosBloquesIds.Contains(b.Id))
+                .Include(b => b.IdMateriaNavigation)
+                .ToList();
+
+            // Validar si ya está inscrito en alguna de las materias (sin importar grupo)
+            foreach (var nuevoBloque in bloquesSeleccionados)
+            {
+                int idMateria = nuevoBloque.IdMateria;
+                if (inscripcionesActuales.Any(i =>
+                    i.IdBloqueHorarioMateriaNavigation.IdMateriaNavigation.Id == idMateria))
+                {
+                    TempData["Error"] = $"Ya estás inscrito en la materia \"{nuevoBloque.IdMateriaNavigation.Nombre}\" en otro grupo.";
+                    return RedirectToAction(nameof(Inscripcion));
+                }
+            }
+
+            // Validar conflictos de horario
+            foreach (var nuevoBloque in bloquesSeleccionados)
+            {
+                bool conflict = inscripcionesActuales.Any(i =>
+                    i.IdBloqueHorarioMateriaNavigation.DiaSemana == nuevoBloque.DiaSemana &&
+                    i.IdBloqueHorarioMateriaNavigation.HoraInicio < nuevoBloque.HoraFin &&
+                    nuevoBloque.HoraInicio < i.IdBloqueHorarioMateriaNavigation.HoraFin
+                );
+
+                if (conflict)
+                {
+                    TempData["Error"] = $"Conflicto de horario detectado con {nuevoBloque.DiaSemana} {nuevoBloque.HoraInicio}-{nuevoBloque.HoraFin}.";
+                    return RedirectToAction(nameof(Inscripcion));
+                }
+            }
+
+            // Guardar inscripciones
+            int guardadas = 0;
+            foreach (var nuevoBloque in bloquesSeleccionados)
+            {
+                if (guardadas >= disponibles) break;
+
+                _context.InscripcionAlumnos.Add(new InscripcionAlumno
                 {
                     IdAlumno = idAlumno.Value,
-                    IdBloqueHorarioMateria = seleccion.IdBloqueHorarioMateria
-                };
-
-                _context.InscripcionAlumnos.Add(inscripcion);
+                    IdBloqueHorarioMateria = nuevoBloque.Id
+                });
+                guardadas++;
             }
 
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Materias inscritas correctamente.";
             return RedirectToAction(nameof(Inscripcion));
         }
-
     }
 }
