@@ -1,0 +1,82 @@
+﻿@model IEnumerable<InscripcionMaterias.Models.GrupoClase>
+
+@{
+    ViewBag.Title = "Listado de Grupos";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">@ViewBag.Title</h2>
+
+    @* Mostrar mensajes de éxito o error *@
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData.ContainsKey("ErrorMessage") && TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="mb-3 text-end">
+        <a asp-action="Crear" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Crear Nuevo Grupo
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="card shadow mb-4">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead >
+                        <tr>
+                            <th>ID</th>
+                            <th>Código</th>
+                            @* <th>Nombre</th> - ELIMINADO *@
+                            @* <th>Capacidad</th> - ELIMINADO *@
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var grupo in Model)
+                        {
+                            <tr>
+                                <td>@grupo.Id</td>
+                                <td>@grupo.Codigo</td>
+                                @* <td>@grupo.Nombre</td> - ELIMINADO *@
+                                @* <td>@grupo.Capacidad</td> - ELIMINADO *@
+                                <td>
+                                    <a asp-action="Editar" asp-route-id="@grupo.Id" >
+                                        <i class="fa fa-edit fa-lg text-primary"></i>
+                                    </a>
+                                    <form asp-action="Eliminar" asp-route-id="@grupo.Id" method="post" class="d-inline"
+                                          onsubmit="return confirm('¿Está seguro de que desea eliminar el grupo con código @grupo.Codigo?');">
+                                        <button type="submit" class="btn">
+                                            <i class="fa fa-trash fa-lg text-danger"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            No hay grupos registrados. ¡Crea uno nuevo!
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @* Puedes añadir scripts específicos aquí si los necesitas (ej. DataTables.js) *@
+}
