@@ -116,6 +116,16 @@ SET IDENTITY_INSERT pensum OFF
 GO
 
 
+
+
+--INSERT DE GRUPOS
+INSERT INTO grupo_clase(codigo) VALUES('DSN09')
+INSERT INTO grupo_clase(codigo) VALUES('DSN411')
+INSERT INTO grupo_clase(codigo) VALUES('DSN321-A')
+INSERT INTO grupo_clase(codigo) VALUES('DSN421')
+INSERT INTO grupo_clase(codigo) VALUES('DSN521-A')
+
+	
 -- Materias disponibles para poder armar los pensum
 SET IDENTITY_INSERT materia ON
 -- ciclo I
