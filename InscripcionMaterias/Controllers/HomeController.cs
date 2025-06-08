@@ -8,7 +8,7 @@ namespace InscripcionMaterias.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger)   
         {
             _logger = logger;
         }
@@ -21,6 +21,8 @@ namespace InscripcionMaterias.Controllers
             }
             return View();
         }
+
+
 
         public IActionResult Privacy()
         {
