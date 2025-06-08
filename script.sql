@@ -116,15 +116,6 @@ SET IDENTITY_INSERT pensum OFF
 GO
 
 
-
-
---INSERT DE GRUPOS
-INSERT INTO grupo_clase(codigo) VALUES('DSN09')
-INSERT INTO grupo_clase(codigo) VALUES('DSN411')
-INSERT INTO grupo_clase(codigo) VALUES('DSN321-A')
-INSERT INTO grupo_clase(codigo) VALUES('DSN421')
-INSERT INTO grupo_clase(codigo) VALUES('DSN521-A')
-
 	
 -- Materias disponibles para poder armar los pensum
 SET IDENTITY_INSERT materia ON
@@ -419,6 +410,31 @@ values (1, 44, null, 10);
 
 insert into pensum_materias(id_pensum, id_materia, id_materia_prerequisito, ciclo_curricular)
 values (1, 45, null, 10);
+
+
+--INSERT PARA INSCRIPCION
+INSERT INTO inscripcion (ciclo_academico, anio, id_pensum, estado) VALUES ('1', '2025', '1', 'Cerrado');
+INSERT INTO inscripcion (ciclo_academico, anio, id_pensum, estado) VALUES ('2', '2025', '1', 'Inscripcion');
+
+--INSERT DE GRUPOS
+INSERT INTO grupo_clase(codigo) VALUES('DSN09')
+INSERT INTO grupo_clase(codigo) VALUES('DSN411')
+INSERT INTO grupo_clase(codigo) VALUES('DSN321-A')
+INSERT INTO grupo_clase(codigo) VALUES('DSN421')
+INSERT INTO grupo_clase(codigo) VALUES('DSN521-A')
+
+
+--INSERT PARA BLOQUE HORARIO MATERIA
+INSERT INTO bloque_horario_material (id_inscripcion, id_materia, id_grupo, dia_semana, hora_inicio, hora_fin) VALUES ('1', '1', '3', 'Lunes', '17:25:00.0000000', '19:26:00.0000000');
+INSERT INTO bloque_horario_material (id_inscripcion, id_materia, id_grupo, dia_semana, hora_inicio, hora_fin) VALUES ('2', '1', '3', 'Lunes', '09:06:00.0000000', '10:06:00.0000000');
+INSERT INTO bloque_horario_material (id_inscripcion, id_materia, id_grupo, dia_semana, hora_inicio, hora_fin) VALUES ('2', '6', '3', 'Lunes', '10:06:00.0000000', '11:07:00.0000000');
+INSERT INTO bloque_horario_material (id_inscripcion, id_materia, id_grupo, dia_semana, hora_inicio, hora_fin) VALUES ('2', '5', '3', 'Jueves', '10:07:00.0000000', '11:07:00.0000000');
+INSERT INTO bloque_horario_material (id_inscripcion, id_materia, id_grupo, dia_semana, hora_inicio, hora_fin) VALUES ('2', '1', '4', 'Martes', '17:30:00.0000000', '20:30:00.0000000');
+INSERT INTO bloque_horario_material (id_inscripcion, id_materia, id_grupo, dia_semana, hora_inicio, hora_fin) VALUES ('2', '3', '3', 'Lunes', '16:23:00.0000000', '18:23:00.0000000');
+INSERT INTO bloque_horario_material (id_inscripcion, id_materia, id_grupo, dia_semana, hora_inicio, hora_fin) VALUES ('2', '3', '4', 'Jueves', '16:25:00.0000000', '18:25:00.0000000');
+
+
+
 
 -- usuarios
 insert into usuario(username, email, nombres, apellidos, password, rol) values ('admin', 'admin@itca.edu.sv', 'Administrador','', 'itca123', 'admin');
