@@ -75,7 +75,7 @@ CREATE TABLE bloque_horario_material(
     id_inscripcion INT NOT NULL,
     id_materia INT NOT NULL,
     id_grupo INT NOT NULL,
-    dia_semana VARCHAR(2) NOT NULL CHECK (dia_semana in ('lu', 'ma', 'mi', 'ju', 'vi', 'sa', 'do')),
+    dia_semana VARCHAR(10) NOT NULL CHECK (dia_semana in ('Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo')),
     hora_inicio TIME NOT NULL,
     hora_fin TIME NOT NULL,
     FOREIGN KEY(id_inscripcion) REFERENCES inscripcion(id),
