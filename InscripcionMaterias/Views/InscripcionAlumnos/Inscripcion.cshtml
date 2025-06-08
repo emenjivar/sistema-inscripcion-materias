@@ -35,11 +35,13 @@
                         </select>
                     </td>
                     <td>
-                        <select name="MateriasSeleccionadas[@i].Grupo" class="form-control">
-                            <option value="">-- Seleccionar grupo --</option>
-                            @foreach (var grupo in Model.GruposDisponibles)
+                        <select name="MateriasSeleccionadas[@i].IdBloqueHorarioMateria" class="form-control">
+                            <option value="">-- Seleccionar grupo/materia/horario --</option>
+                            @foreach (var item in Model.GrupoMateriaHorarios)
                             {
-                                <option value="@grupo.Id">@grupo.Codigo</option>
+                                <option value="@item.IdBloqueHorarioMateria">
+                                    @item.MateriaNombre - @item.GrupoCodigo - @item.HorarioDescripcion
+                                </option>
                             }
                         </select>
                     </td>
