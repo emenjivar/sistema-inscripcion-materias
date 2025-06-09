@@ -46,6 +46,13 @@
             }
         </tbody>
     </table>
+    @if (Model.MateriasSeleccionadas.Any())
+    {
+        <a asp-controller="Reporte" asp-action="GenerarReporteInscripcion" asp-route-id="@Model.IdInscripcion"
+           class="btn btn-outline-danger mb-3" target="_blank">
+            <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
+        </a>
+    }
 
     @if (Model.SelectsDisponibles > 0)
     {
