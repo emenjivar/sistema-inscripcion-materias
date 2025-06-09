@@ -127,6 +127,67 @@ public class ReporteController : Controller
         await viewResult.View.RenderAsync(viewContext);
         return sw.ToString();
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GenerarReporteInscripcion(int id)
+    {
+        try
+        {
+            // Obtener las inscripciones del alumno en esta inscripción específica
+            var inscripcionesAlumno = await _context.InscripcionAlumnos
+                .Include(ia => ia.IdAlumnoNavigation)
+                .Include(ia => ia.IdBloqueHorarioMateriaNavigation)
+                    .ThenInclude(bhm => bhm.IdMateriaNavigation)
+                .Include(ia => ia.IdBloqueHorarioMateriaNavigation)
+                    .ThenInclude(bhm => bhm.IdGrupoNavigation)
+                .Where(ia => ia.IdBloqueHorarioMateriaNavigation.IdInscripcion == id)
+                .ToListAsync();
+
+            if (!inscripcionesAlumno.Any())
+                return NotFound("No hay materias inscritas para esta inscripción.");
+
+            var alumno = inscripcionesAlumno.First().IdAlumnoNavigation;
+
+            var inscripcion = await _context.Inscripcions
+                .FirstOrDefaultAsync(i => i.Id == id);
+
+            if (inscripcion == null)
+                return NotFound("Inscripción no encontrada.");
+
+            var model = new InscripcionViewModel
+            {
+                NombreAlumno = alumno.Nombres + " " + alumno.Apellidos,
+                Carnet = alumno.Carnet,
+                Anio = inscripcion.Anio,
+                CicloAcademico = inscripcion.CicloAcademico,
+                MateriasSeleccionadas = inscripcionesAlumno.Select(ia => new InscripcionSeleccionadaViewModel
+                {
+                    MateriaNombre = ia.IdBloqueHorarioMateriaNavigation.IdMateriaNavigation.Nombre,
+                    Grupo = ia.IdBloqueHorarioMateriaNavigation.IdGrupoNavigation.Codigo,
+                    Horarios = new List<string>
+                    {
+                        $"{ia.IdBloqueHorarioMateriaNavigation.DiaSemana} {ia.IdBloqueHorarioMateriaNavigation.HoraInicio} - {ia.IdBloqueHorarioMateriaNavigation.HoraFin}"
+                    }
+                }).ToList()
+            };
+
+            var html = await RenderViewToStringAsync("~/Views/Reporte/InscripcionMaterias.cshtml", model);
+
+            var pdfBytes = _reporteService.GenerarPdfDesdeHtml(html, new PdfOptions
+            {
+                Orientation = Orientation.Portrait,
+                PaperSize = PaperKind.A4,
+                Margins = new MarginSettings { Top = 10, Bottom = 10, Left = 10, Right = 10 }
+            });
+
+            Response.Headers.Append("Content-Disposition", "inline; filename=InscripcionMaterias.pdf");
+            return File(pdfBytes, "application/pdf");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Ocurrió un error al generar el reporte");
+        }
+    }
 }
 public class PdfOptions
 {

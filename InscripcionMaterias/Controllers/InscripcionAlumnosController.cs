@@ -259,7 +259,8 @@ namespace InscripcionMaterias.Controllers
                 GruposDisponibles = _context.GrupoClases.ToList(),
                 GrupoMateriaHorarios = bloquesHorarios,
                 MateriasSeleccionadas = materiasSeleccionadas,
-                SelectsDisponibles = selectsDisponibles
+                SelectsDisponibles = selectsDisponibles,
+                IdInscripcion = inscripcionActiva.Id
             };
 
 

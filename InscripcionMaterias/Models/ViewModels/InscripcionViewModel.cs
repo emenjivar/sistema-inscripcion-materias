@@ -6,6 +6,7 @@
         public string Carnet { get; set; } = "";
         public int CicloAcademico { get; set; }
         public int Anio { get; set; }
+        public int IdInscripcion { get; set; }
 
         public List<Materium> MateriasDisponibles { get; set; } = new();
         public List<GrupoClase> GruposDisponibles { get; set; } = new();
