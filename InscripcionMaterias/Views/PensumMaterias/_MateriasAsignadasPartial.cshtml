@@ -2,6 +2,9 @@
 @{
     int cantidadCiclos = ViewBag.CantidadCiclos ?? 0;
     string nombreCarrera = ViewBag.NombreCarrera;
+	int idPensum = ViewBag.IdPensum ?? 0;
+    string? username = Context.Session.GetString("Username");
+    string? rol = Context.Session.GetString("Rol"); // Obtener el rol de la sesión
 }
 
 <!DOCTYPE html>
@@ -51,6 +54,10 @@
             font-size: 13px;
         }
 
+        .scroll-wrapper {
+            overflow-x: auto;
+            width: 100%;
+        }
         .pensum-container {
             display: grid;
             grid-template-columns: repeat( @cantidadCiclos, minmax(250px, 1fr));
@@ -183,17 +190,20 @@
 
     <div class="actions-bar">
         <div>
-            <button class="btn-agregar" onclick="agregarMateria()">
+            <!--
+                    <button class="btn-agregar" onclick="agregarMateria()">
                 + Agregar Materia
             </button>
-            <a asp-controller="Reporte" asp-action="GenerarReportePensum" asp-route-id="2"
+            -->
+        
+            <a asp-controller="Reporte" asp-action="GenerarReportePensum" asp-route-id="@idPensum"
                class="btn btn-outline-primary" target="_blank">
                 <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
             </a>
         </div>
     </div>
-
-    <div class="pensum-container">
+    <div class="scroll-wrapper">
+        <div class="pensum-container">
         @for (int ciclo = 1; ciclo <= cantidadCiclos; ciclo++)
         {
             <div class="ciclo-column">
@@ -211,20 +221,28 @@
                     {
                         <div class="materia-card">
                             <div class="materia-header">
-                              
-                                <a href="#" onclick="confirmDelete(event, '@materia.Id')" class="btn-eliminar text-danger fs-4 fw-bold text-decoration-none"
-                                   data-id="@materia.Id" title="Eliminar" style="line-height: 1; cursor:pointer;">
-                                    &times;
-                                </a>
+                                <div style="display:flex; gap: 8px; align-items:center;">
+                                        @if (rol.ToLower() == "admin")
 
-                             
-                                <!--
-                                    <a class="fs-4 fw-bold text-decoration-none" style="line-height: 1; ">
+                                        {
+                                            <!-- Botón Editar -->
+                                            <a href="#" onclick="abrirModalEditar(@materia.Id)" class="btn-editar text-primary fs-5 fw-bold text-decoration-none"
+                                               title="Editar" style="line-height: 1; margin-left: 10px; cursor:pointer;">
+                                                &#9998;
+                                            </a>
 
-                                </a>
-                                -->
+
+                                            <!-- Botón Eliminar -->
+                                            <a href="#" onclick="confirmDelete(event, '@materia.Id')" class="btn-eliminar text-danger fs-4 fw-bold text-decoration-none"
+                                               data-id="@materia.Id" title="Eliminar" style="line-height: 1; cursor:pointer;">
+                                                &times;
+                                            </a>
+                                        }
+                                </div>
+
                                 <span class="materia-codigo">@materia.IdMateriaNavigation.Codigo</span>
                             </div>
+
                             <div class="materia-nombre">@materia.IdMateriaNavigation.Nombre</div>
                             <div class="materia-footer">
                                 <span>@(materia.IdMateriaPrerequisito.HasValue ? materia.IdMateriaNavigation.Codigo : "-")</span>
@@ -242,13 +260,136 @@
             </div>
         }
     </div>
+    </div>
+    <!-- Modal Editar Materia -->
+    <div id="modalEditarMateria" style="display:none; position: fixed; top:0; left:0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.5); 
+    z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background-color: white; border-radius: 8px; width: 80vw; max-width: 900px; max-height: 90vh; overflow-y: auto; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2); padding: 20px; position: relative;">
+        
+        <h2 style="color: var(--color-primario); margin-bottom: 15px;">Editar Materia</h2>
+        
+        <form id="formEditarMateria">
+            <input type="hidden" name="Id" id="editId" />
+
+            <label>
+                Materia:
+                <select name="IdMateria" id="editIdMateria" style="width: 100%; padding: 8px; border: 1px solid var(--color-borde); border-radius: 4px;" required>
+                    <!-- opciones se cargarán por JS -->
+                </select>
+            </label>
+
+            <label>
+                Materia Prerrequisito:
+                <select name="IdMateriaPrerequisito" id="editIdMateriaPrerequisito" style="width: 100%; padding: 8px; border: 1px solid var(--color-borde); border-radius: 4px;">
+                    <option value="">-- Ninguno --</option>
+                    <!-- opciones se cargarán por JS -->
+                </select>
+            </label>
+
+            <label>
+                Ciclo Curricular:
+                <select name="CicloCurricular" id="editCicloCurricular" style="width: 100px; padding: 8px; border: 1px solid var(--color-borde); border-radius: 4px;" required>
+                    <!-- opciones de 1 a cantidadCiclos -->
+                    @for (int i = 1; i <= cantidadCiclos; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </select>
+            </label>
+
+            <div style="margin-top: 25px; display: flex; justify-content: flex-end; gap: 15px;">
+                <button type="button" onclick="cerrarModalEditar()" style="background: none; border: 1px solid var(--color-borde); color: var(--color-primario); padding: 8px 15px; border-radius: 4px; cursor: pointer;">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn-agregar" style="padding: 8px 20px;">
+                    Guardar cambios
+                </button>
+            </div>
+        </form>
+
+        <button onclick="cerrarModalEditar()" style="position: absolute; top: 12px; right: 12px; background: none; border: none; font-size: 24px; color: var(--color-destacado); cursor: pointer;">
+            &times;
+        </button>
+    </div>
+</div>
 
     <script>
-        function agregarMateria() {
-            // Implementar lógica para abrir modal de agregar materia
-            alert('Funcionalidad para agregar materia');
+        console.log("estoy aqui");
+                async function abrirModalEditar(id) {
+            try {
+                // Primero carga las materias para llenar los selects
+                await cargarMateriasEnSelects();
+
+                // Luego pide la información específica de la materia a editar
+                const response = await fetch(`/PensumMaterias/GetById?id=${id}`);
+                if (!response.ok) throw new Error("Error al obtener datos");
+                const data = await response.json();
+
+                // Rellena los campos del modal con la info recibida
+                document.getElementById('editId').value = data.id;
+                document.getElementById('editIdMateria').value = data.idMateria;
+                document.getElementById('editIdMateriaPrerequisito').value = data.idMateriaPrerequisito ?? "";
+                document.getElementById('editCicloCurricular').value = data.cicloCurricular;
+
+                // Muestra el modal
+                document.getElementById('modalEditarMateria').style.display = 'flex';
+            } catch (error) {
+                console.error("Error:", error);
+                alert("No se pudo cargar la materia.");
+            }
         }
 
+
+        function cerrarModalEditar() {
+            document.getElementById('modalEditarMateria').style.display = 'none';
+        }
+                function cargarMateriasEnSelects() {
+            fetch('/PensumMaterias/GetMaterias')
+                .then(res => res.json())
+                .then(materias => {
+                    let selectMateria = document.getElementById('editIdMateria');
+                    let selectPrereq = document.getElementById('editIdMateriaPrerequisito');
+
+                    selectMateria.innerHTML = '';
+                    selectPrereq.innerHTML = '<option value="">-- Ninguno --</option>';
+
+                    materias.forEach(m => {
+                        let option = new Option(m.nombre, m.id);
+                        selectMateria.appendChild(option);
+                        selectPrereq.appendChild(option.cloneNode(true));
+                    });
+                });
+        }
+                document.getElementById("formEditarMateria").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const data = {
+                Id: document.getElementById('editId').value,
+                IdMateria: document.getElementById('editIdMateria').value,
+                IdMateriaPrerequisito: document.getElementById('editIdMateriaPrerequisito').value || null,
+                CicloCurricular: document.getElementById('editCicloCurricular').value
+            };
+
+            fetch('/PensumMaterias/EditarMateria', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("Error al actualizar");
+                    location.reload(); // recarga la página para ver cambios
+                })
+                .catch(err => {
+                    alert("No se pudo actualizar la materia");
+                    console.error(err);
+                });
+        });
+
+
     </script>
+
 </body>
 </html>

@@ -79,6 +79,7 @@ namespace InscripcionMaterias.Controllers
                 return NotFound();
             }
 
+
             return View(pensumMateria);
         }
 
@@ -141,6 +142,7 @@ namespace InscripcionMaterias.Controllers
 
             ViewBag.CantidadCiclos = cantidadCiclos;
             ViewBag.NombreCarrera = nombreCarrera;
+            ViewBag.IdPensum = idPensum;
 
             return PartialView("_MateriasAsignadasPartial", materias);
         }
@@ -250,18 +252,94 @@ namespace InscripcionMaterias.Controllers
                 .Where(pm => pm.IdPensum == estudiante.IdPensum)
                 .ToListAsync();
 
+            var pensum = await _context.Pensums
+                .FirstOrDefaultAsync(p => p.Id == estudiante.IdPensum);
+
+
             ViewBag.NombreCarrera = estudiante.IdPensumNavigation.Carrera;
 
             // Calcular el total de ciclos y años
-            int maxCiclo = materiasPensum.Max(m => m.CicloCurricular);
+            int maxCiclo = pensum?.CantidadCiclos ?? 0;
             int cantidadAnios = (int)Math.Ceiling(maxCiclo / 2.0);
 
             ViewBag.CantidadCiclos = maxCiclo;
             ViewBag.CantidadAnios = cantidadAnios;
+            ViewBag.IdPensum = estudiante.IdPensum;
 
             return View("Details", materiasPensum);
         }
 
+
+
+        // GET: Obtener datos para editar
+        [HttpGet]
+        public IActionResult GetById(int id)
+        {
+            var materia = _context.PensumMaterias
+                .Where(pm => pm.Id == id)
+                .Select(pm => new {
+                    id = pm.Id,
+                    idMateria = pm.IdMateria,
+                    idMateriaPrerequisito = pm.IdMateriaPrerequisito,
+                    cicloCurricular = pm.CicloCurricular
+                })
+                .FirstOrDefault();
+
+            if (materia == null)
+                return NotFound();
+
+            return Json(materia);
+        }
+
+        // POST: Actualizar datos de materia
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Actualizar([FromForm] PensumMateria model)
+        {
+            if (!ModelState.IsValid)
+                return Json(new { success = false, message = "Datos inválidos." });
+
+            var materia = _context.PensumMaterias.Find(model.Id);
+            if (materia == null)
+                return Json(new { success = false, message = "Materia no encontrada." });
+
+            materia.IdMateria = model.IdMateria;
+            materia.IdMateriaPrerequisito = model.IdMateriaPrerequisito;
+            materia.CicloCurricular = model.CicloCurricular;
+
+            _context.SaveChanges();
+
+            return Json(new { success = true, message = "Materia actualizada correctamente." });
+        }
+
+        [HttpPost]
+        public IActionResult EditarMateria([FromBody] PensumMateria model)
+        {
+            var materia = _context.PensumMaterias.Find(model.Id);
+            if (materia == null)
+                return NotFound();
+
+            materia.IdMateria = model.IdMateria;
+            materia.IdMateriaPrerequisito = model.IdMateriaPrerequisito;
+            materia.CicloCurricular = model.CicloCurricular;
+
+            _context.SaveChanges();
+
+            return Ok();
+        }
+
+
+        [HttpGet]
+        public IActionResult GetMaterias()
+        {
+            var materias = _context.Materia
+                .Select(m => new {
+                    id = m.Id,
+                    nombre = m.Nombre
+                }).ToList();
+
+            return Json(materias);
+        }
 
 
 
