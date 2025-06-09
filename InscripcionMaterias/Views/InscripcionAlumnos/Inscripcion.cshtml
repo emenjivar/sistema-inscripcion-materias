@@ -1,0 +1,162 @@
+﻿@model InscripcionMaterias.Models.ViewModels.InscripcionViewModel
+@{
+    ViewData["Title"] = "Inscripción de Materias";
+}
+
+<h2>Inscripción de materias</h2>
+<div>
+    <strong>Alumno:</strong> @Model.NombreAlumno<br />
+    <strong>Carnet:</strong> @Model.Carnet<br />
+    <strong>Ciclo:</strong> I, @Model.Anio
+</div>
+
+<form asp-action="GuardarInscripcion" method="post" onsubmit="return validarFormulario();">
+    <table class="table">
+        <thead>
+            <tr><th>Materia</th><th>Grupo</th><th>Acción</th></tr>
+        </thead>
+        <tbody id="tabla-inscripciones">
+            @for (int i = 0; i < Model.SelectsDisponibles; i++)
+            {
+                <tr>
+                    <td>
+                        <select name="MateriasSeleccionadas[@i].IdMateria" class="form-control materia-select">
+                            <option value="">-- Seleccionar materia --</option>
+                            @foreach (var m in Model.MateriasDisponibles)
+                            {
+                                <option value="@m.Id">@m.Nombre</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <select name="MateriasSeleccionadas[@i].IdBloqueHorarioMateria" class="form-control grupo-select">
+                            <option value="">-- Seleccionar grupo/mat./horario --</option>
+                            @foreach (var b in Model.GrupoMateriaHorarios)
+                            {
+                                <option value="@b.IdBloqueHorarioMateria" data-idmateria="@b.IdMateria">
+                                    @b.MateriaNombre - @b.GrupoCodigo - @b.HorarioDescripcion
+                                </option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-link text-danger btn-deseleccionar">Deseleccionar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (Model.SelectsDisponibles > 0)
+    {
+        <button type="submit" class="btn btn-primary mt-3">Guardar inscripción</button>
+    }
+    else
+    {
+        <div class="alert alert-info mt-3">
+            Ya has inscrito el máximo de 5 materias permitidas para este ciclo.
+        </div>
+    }
+</form>
+
+<hr />
+<h4>Materias seleccionadas</h4>
+<table class="table">
+    <thead>
+        <tr><th>Materia</th><th>Grupo</th><th>Horarios</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.MateriasSeleccionadas)
+        {
+            <tr>
+                <td>@item.MateriaNombre</td>
+                <td>@item.Grupo</td>
+                <td>@string.Join("<br/>", item.Horarios)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(function () {
+          $("#tabla-inscripciones tr").each(function () {
+            const $row = $(this);
+            const $mat = $row.find(".materia-select");
+            const $grp = $row.find(".grupo-select");
+            const $btn = $row.find(".btn-deseleccionar");
+
+            $mat.change(() => {
+              const mid = $mat.val();
+              $grp.val("");
+              $grp.find("option").each(function () {
+                const $opt = $(this);
+                $opt.toggle(!$opt.val() || $opt.data("idmateria") == mid);
+              });
+            });
+
+            $btn.click(() => {
+              $mat.val("");
+              $grp.val("");
+              $grp.find("option").show();
+            });
+          });
+
+          const err = '@TempData["Error"]';
+          const ok = '@TempData["Success"]';
+          if (err) Swal.fire('¡Error!', err, 'error');
+          if (ok) Swal.fire('¡Éxito!', ok, 'success');
+        });
+
+                function validarFormulario() {
+            const usados = new Set();
+            const horarios = []; // Para comparar solapamientos
+            let ok = true;
+
+            $("#tabla-inscripciones tr").each(function () {
+                const $row = $(this);
+                const mid = $row.find(".materia-select").val();
+                const $grp = $row.find(".grupo-select");
+                const bid = $grp.val();
+                const selectedOption = $grp.find("option:selected");
+                const texto = selectedOption.text();
+
+                // Extraer datos de texto como "Ma 03:30 - 05:30"
+                const regex = /([A-Za-z]+) (\d{2}:\d{2}) - (\d{2}:\d{2})/;
+                const match = texto.match(regex);
+
+                if (mid && bid) {
+                    if (usados.has(bid)) {
+                        Swal.fire('Atención', 'Ya has seleccionado ese grupo/horario.', 'warning');
+                        ok = false; return false;
+                    }
+                    usados.add(bid);
+
+                    if (match) {
+                        const dia = match[1];
+                        const inicio = match[2];
+                        const fin = match[3];
+
+                        // Comparar con los horarios ya guardados
+                        for (const h of horarios) {
+                            if (h.dia === dia &&
+                                ((inicio >= h.inicio && inicio < h.fin) ||
+                                 (fin > h.inicio && fin <= h.fin) ||
+                                 (inicio <= h.inicio && fin >= h.fin))) {
+                                Swal.fire('Choque de horario', `Conflicto entre ${h.texto} y ${texto}.`, 'error');
+                                ok = false;
+                                return false;
+                            }
+                        }
+                        horarios.push({ dia, inicio, fin, texto });
+                    }
+                } else if (mid || bid) {
+                    Swal.fire('Atención', 'Selecciona materia y grupo.', 'warning');
+                    ok = false; return false;
+                }
+            });
+            return ok;
+        }
+    </script>
+}

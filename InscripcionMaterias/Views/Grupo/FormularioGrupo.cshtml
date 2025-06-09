@@ -1,0 +1,67 @@
+﻿@model InscripcionMaterias.Models.ViewModels.GrupoClaseViewModel
+
+@{
+    ViewBag.Title = Model.Id == 0 ? "Crear Nuevo Grupo" : "Editar Grupo";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">@ViewBag.Title</h2>
+
+    @* Mostrar mensajes de éxito o error *@
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData.ContainsKey("ErrorMessage") && TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form asp-action="Guardar" asp-controller="Grupo" method="post">
+        @Html.AntiForgeryToken()
+
+        @* Campo oculto para el ID (0 para crear, ID para editar) *@
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="Codigo" class="form-label"></label>
+            <input asp-for="Codigo" class="form-control" />
+            <span asp-validation-for="Codigo" class="text-danger"></span>
+        </div>
+
+        @* ELIMINADO: Campos para Nombre y Capacidad *@
+        @* <div class="mb-3">
+            <label asp-for="Nombre" class="form-label"></label>
+            <input asp-for="Nombre" class="form-control" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Capacidad" class="form-label"></label>
+            <input asp-for="Capacidad" type="number" class="form-control" />
+            <span asp-validation-for="Capacidad" class="text-danger"></span>
+        </div> *@
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-save"></i> Guardar
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-circle"></i> Volver a la Lista
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        // Habilitar la validación del lado del cliente
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

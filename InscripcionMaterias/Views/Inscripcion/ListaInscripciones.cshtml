@@ -1,0 +1,86 @@
+﻿@model InscripcionMaterias.Models.ViewModels.ListaInscripcionesViewModel
+
+@{
+    ViewBag.Title = "Listado de Inscripciones";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">@ViewBag.Title</h2>
+
+    @* Mostrar mensajes de éxito o error (vienen del TempData del controlador) *@
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData.ContainsKey("ErrorMessage") && TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <div class="card shadow mb-4">
+        <div class="mb-3 text-end">
+            <a asp-action="Index" asp-controller="Inscripcion" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Crear Nueva Inscripción
+            </a>
+        </div>
+
+        @if (Model.Inscripciones != null && Model.Inscripciones.Any())
+        {
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Ciclo</th>
+                                <th>Año</th>
+                                <th>Pensum (Carrera)</th>
+                                <th>Estado</th>
+                                @* <th>Fecha de Creación</th> ELIMINADO: Tu entidad Inscripcion no tiene FechaCreacion *@
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var inscripcion in Model.Inscripciones)
+                            {
+                                <tr>
+                                    <td>@inscripcion.Id</td>
+                                    <td>@inscripcion.CicloAcademico</td>
+                                    <td>@inscripcion.Anio</td>
+                                    <td>@inscripcion.CarreraPensum</td>
+                                    <td>@inscripcion.Estado</td>
+                                    @* <td>@inscripcion.FechaCreacion.ToShortDateString()</td> ELIMINADO: Tu entidad Inscripcion no tiene FechaCreacion *@
+                                    <td>
+                                        <a asp-action="Index" asp-controller="Inscripcion" asp-route-idInscripcion="@inscripcion.Id" >
+                                            <i class="fa fa-edit fa-lg text-primary"></i>
+                                        </a>
+                                        @* Opcional: Botón de eliminar (requiere acción Delete en el controlador y confirmación JS) *@
+                                        @* <a asp-action="EliminarInscripcion" asp-controller="Inscripcion" asp-route-id="@inscripcion.Id" class="btn btn-danger btn-sm"
+                                onclick="return confirm('¿Está seguro de que desea eliminar esta inscripción y todos sus bloques?');">
+                                <i class="bi bi-trash"></i> Eliminar
+                                </a> *@
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info" role="alert">
+                No hay inscripciones registradas. ¡Crea una nueva!
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @* Puedes añadir scripts específicos aquí si los necesitas para la tabla (ej. DataTables.js) *@
+}

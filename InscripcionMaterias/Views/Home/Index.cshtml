@@ -8,7 +8,10 @@
         Gestiona tus carreras, inscríbete en materias, y mantente al día con tus horarios académicos.
         Nuestro sistema está diseñado para facilitar y agilizar todo el proceso de inscripción.
     </p>
-
+    @{
+        string? username = Context.Session.GetString("Username");
+        string? rol = Context.Session.GetString("Rol"); // Obtener el rol de la sesión
+    }
     <div class="row justify-content-center">
         <!-- Columna Izquierda: opciones -->
         <div class="col-md-6">
@@ -17,8 +20,14 @@
                     <h5 class="card-title">¿Qué deseas hacer hoy?</h5>
                     <p class="card-text">Selecciona una opción para comenzar:</p>
                     <div class="d-grid gap-3">
-                        <a href="@Url.Action("Index", "Pensums")" class="btn btn-primary btn-lg">Ver Carreras y Pensums</a>
-                        <a href="" class="btn btn-success btn-lg">Inscribirme en Materias</a>
+                        @if (rol.ToLower() == "admin")
+                        {
+                            <a href="@Url.Action("Index", "Pensums")" class="btn btn-primary btn-lg">Ver Carreras y Pensums</a>
+                        }
+                        @if (rol.ToLower() == "alumno")
+                        {
+                            <a href="@Url.Action("Inscripcion", "InscripcionAlumnos")" class="btn btn-success btn-lg">Inscribirme en Materias</a>
+                        }
                         <a href="" class="btn btn-info btn-lg">Consultar Horarios</a>
                     </div>
                 </div>

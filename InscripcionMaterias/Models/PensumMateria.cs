@@ -15,9 +15,9 @@ public partial class PensumMateria
 
     public int CicloCurricular { get; set; }
 
-    public virtual Materium? IdMateriaNavigation { get; set; } = null!;
+    public virtual Materium IdMateriaNavigation { get; set; } = null!;
 
     public virtual Materium? IdMateriaPrerequisitoNavigation { get; set; }
 
-    public virtual Pensum? IdPensumNavigation { get; set; } = null!;
+    public virtual Pensum IdPensumNavigation { get; set; } = null!;
 }

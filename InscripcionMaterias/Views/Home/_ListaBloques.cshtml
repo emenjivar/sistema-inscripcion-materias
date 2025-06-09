@@ -1,0 +1,25 @@
+﻿@model List<InscripcionMaterias.Models.BloqueHorarioMaterial>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Materia</th>
+            <th>Grupo</th>
+            <th>Día</th>
+            <th>Hora inicio</th>
+            <th>Hora fin</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var bloque in Model)
+        {
+            <tr>
+                <td>@bloque.IdMateriaNavigation.Nombre</td>
+                <td>@bloque.IdGrupoNavigation.Codigo</td>
+                <td>@bloque.DiaSemana</td>
+                <td>@bloque.HoraInicio</td>
+                <td>@bloque.HoraFin</td>
+            </tr>
+        }
+    </tbody>
+</table>

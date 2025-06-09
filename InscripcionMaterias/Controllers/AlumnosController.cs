@@ -18,37 +18,25 @@ namespace InscripcionMaterias.Controllers
             _context = context;
         }
 
-        // GET: Alumnos
+        private void CargarPensumsActivos()
+        {
+            var pensumsActivos = _context.Pensums
+                .Where(p => p.Estado == true)
+                .Select(p => new SelectListItem
+                {
+                    Value = p.Id.ToString(),
+                    Text = p.Carrera
+                }).ToList();
+
+            ViewBag.Pensums = pensumsActivos;
+        }
+
         public async Task<IActionResult> Index()
         {
-            var gestionDbContext = _context.Alumnos.Include(a => a.IdPensumNavigation);
-            return View(await gestionDbContext.ToListAsync());
-        }
-
-        // GET: Alumnos/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var alumno = await _context.Alumnos
+            var alumnos = await _context.Alumnos
                 .Include(a => a.IdPensumNavigation)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (alumno == null)
-            {
-                return NotFound();
-            }
-
-            return View(alumno);
-        }
-
-        // GET: Alumnos/Create
-        public IActionResult Create()
-        {
-            ViewData["IdPensum"] = new SelectList(_context.Pensums, "Id", "Id");
-            return View();
+                .ToListAsync();
+            return View(alumnos);
         }
 
         // POST: Alumnos/Create
@@ -56,7 +44,7 @@ namespace InscripcionMaterias.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Carnet,IdPensum,Password")] Alumno alumno)
+        public async Task<IActionResult> Create([Bind("Id,Carnet,Nombres,Apellidos,IdPensum,IdUsuario")] Alumno alumno)
         {
             if (ModelState.IsValid)
             {
@@ -64,100 +52,55 @@ namespace InscripcionMaterias.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdPensum"] = new SelectList(_context.Pensums, "Id", "Id", alumno.IdPensum);
             return View(alumno);
         }
 
-        // GET: Alumnos/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> AlumnosTabla()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var alumno = await _context.Alumnos.FindAsync(id);
-            if (alumno == null)
-            {
-                return NotFound();
-            }
-            ViewData["IdPensum"] = new SelectList(_context.Pensums, "Id", "Id", alumno.IdPensum);
-            return View(alumno);
+            var alumnos = await _context.Alumnos
+                .Include(a => a.IdPensumNavigation)
+                .ToListAsync();
+            return PartialView("_AlumnosTabla", alumnos);
         }
 
-        // POST: Alumnos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        public async Task<IActionResult> Edit(int id)
+        {
+            var alumno = await _context.Alumnos.FindAsync(id);
+            if (alumno == null) return NotFound();
+
+            CargarPensumsActivos();
+            return PartialView("Edit", alumno);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Carnet,IdPensum,Password")] Alumno alumno)
+        public async Task<IActionResult> Edit(Alumno alumno)
         {
-            if (id != alumno.Id)
-            {
-                return NotFound();
-            }
+            if (!ModelState.IsValid)
+                return Json(new { success = false, message = "Datos inválidos." });
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(alumno);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AlumnoExists(alumno.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(alumno);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true });
             }
-            ViewData["IdPensum"] = new SelectList(_context.Pensums, "Id", "Id", alumno.IdPensum);
-            return View(alumno);
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
-        // GET: Alumnos/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var alumno = await _context.Alumnos
-                .Include(a => a.IdPensumNavigation)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (alumno == null)
-            {
-                return NotFound();
-            }
-
-            return View(alumno);
-        }
-
-        // POST: Alumnos/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
         {
             var alumno = await _context.Alumnos.FindAsync(id);
-            if (alumno != null)
-            {
-                _context.Alumnos.Remove(alumno);
-            }
+            if (alumno == null)
+                return Json(new { success = false, message = "Alumno no encontrado." });
 
+            _context.Alumnos.Remove(alumno);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool AlumnoExists(int id)
-        {
-            return _context.Alumnos.Any(e => e.Id == id);
+            return Json(new { success = true });
         }
     }
 }

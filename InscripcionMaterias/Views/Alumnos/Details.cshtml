@@ -17,20 +17,36 @@
             @Html.DisplayFor(model => model.Carnet)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Password)
+            @Html.DisplayNameFor(model => model.Nombres)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Password)
+            @Html.DisplayFor(model => model.Nombres)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdPensumNavigation)
+            @Html.DisplayNameFor(model => model.Apellidos)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdPensumNavigation.Id)
+            @Html.DisplayFor(model => model.Apellidos)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdPensum)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdPensum)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdUsuario)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdUsuario)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" title="Editar">
+        <i class="fa fa-edit fa-lg text-primary"></i>
+    </a>
+    <a asp-action="Index" class="btn btn-secondary" title="Regresar">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i> Volver
+    </a>
 </div>
