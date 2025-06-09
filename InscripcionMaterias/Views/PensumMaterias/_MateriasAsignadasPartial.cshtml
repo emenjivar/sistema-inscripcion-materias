@@ -3,6 +3,8 @@
     int cantidadCiclos = ViewBag.CantidadCiclos ?? 0;
     string nombreCarrera = ViewBag.NombreCarrera;
 	int idPensum = ViewBag.IdPensum ?? 0;
+    string? username = Context.Session.GetString("Username");
+    string? rol = Context.Session.GetString("Rol"); // Obtener el rol de la sesión
 }
 
 <!DOCTYPE html>
@@ -220,18 +222,22 @@
                         <div class="materia-card">
                             <div class="materia-header">
                                 <div style="display:flex; gap: 8px; align-items:center;">
-                                    <!-- Botón Editar -->
-                                    <a href="#" onclick="abrirModalEditar(@materia.Id)" class="btn-editar text-primary fs-5 fw-bold text-decoration-none"
-                                       title="Editar" style="line-height: 1; margin-left: 10px; cursor:pointer;">
-                                        &#9998;
-                                    </a>
+                                        @if (rol.ToLower() == "admin")
+
+                                        {
+                                            <!-- Botón Editar -->
+                                            <a href="#" onclick="abrirModalEditar(@materia.Id)" class="btn-editar text-primary fs-5 fw-bold text-decoration-none"
+                                               title="Editar" style="line-height: 1; margin-left: 10px; cursor:pointer;">
+                                                &#9998;
+                                            </a>
 
 
-                                    <!-- Botón Eliminar -->
-                                    <a href="#" onclick="confirmDelete(event, '@materia.Id')" class="btn-eliminar text-danger fs-4 fw-bold text-decoration-none"
-                                       data-id="@materia.Id" title="Eliminar" style="line-height: 1; cursor:pointer;">
-                                        &times;
-                                    </a>
+                                            <!-- Botón Eliminar -->
+                                            <a href="#" onclick="confirmDelete(event, '@materia.Id')" class="btn-eliminar text-danger fs-4 fw-bold text-decoration-none"
+                                               data-id="@materia.Id" title="Eliminar" style="line-height: 1; cursor:pointer;">
+                                                &times;
+                                            </a>
+                                        }
                                 </div>
 
                                 <span class="materia-codigo">@materia.IdMateriaNavigation.Codigo</span>
