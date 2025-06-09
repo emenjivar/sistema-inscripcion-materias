@@ -245,7 +245,7 @@
 
                             <div class="materia-nombre">@materia.IdMateriaNavigation.Nombre</div>
                             <div class="materia-footer">
-                                <span>@(materia.IdMateriaPrerequisito.HasValue ? materia.IdMateriaNavigation.Codigo : "-")</span>
+                                    <span>@(materia.IdMateriaPrerequisito.HasValue ? materia.IdMateriaPrerequisitoNavigation.Codigo : "-")</span>
                                 <span class="uv-badge">@materia.IdMateriaNavigation.UnidadesValorativas UV</span>
                             </div>
                         </div>
