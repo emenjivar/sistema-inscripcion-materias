@@ -2,6 +2,7 @@
 @{
     int cantidadCiclos = ViewBag.CantidadCiclos ?? 0;
     string nombreCarrera = ViewBag.NombreCarrera;
+	int idPensum = ViewBag.IdPensum ?? 0;
 }
 
 <!DOCTYPE html>
@@ -193,7 +194,7 @@
             </button>
             -->
         
-            <a asp-controller="Reporte" asp-action="GenerarReportePensum" asp-route-id="2"
+            <a asp-controller="Reporte" asp-action="GenerarReportePensum" asp-route-id="@idPensum"
                class="btn btn-outline-primary" target="_blank">
                 <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
             </a>

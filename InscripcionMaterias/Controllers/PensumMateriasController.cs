@@ -79,6 +79,7 @@ namespace InscripcionMaterias.Controllers
                 return NotFound();
             }
 
+
             return View(pensumMateria);
         }
 
@@ -141,6 +142,7 @@ namespace InscripcionMaterias.Controllers
 
             ViewBag.CantidadCiclos = cantidadCiclos;
             ViewBag.NombreCarrera = nombreCarrera;
+            ViewBag.IdPensum = idPensum;
 
             return PartialView("_MateriasAsignadasPartial", materias);
         }
@@ -262,6 +264,7 @@ namespace InscripcionMaterias.Controllers
 
             ViewBag.CantidadCiclos = maxCiclo;
             ViewBag.CantidadAnios = cantidadAnios;
+            ViewBag.IdPensum = estudiante.IdPensum;
 
             return View("Details", materiasPensum);
         }

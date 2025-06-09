@@ -32,7 +32,6 @@ public class ReporteController : Controller
     }
 
     [HttpGet]
-    [HttpGet]
     public async Task<IActionResult> GenerarReportePensum(int id)
     {
         try
