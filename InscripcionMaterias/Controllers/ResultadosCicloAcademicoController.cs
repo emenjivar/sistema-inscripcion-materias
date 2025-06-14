@@ -268,8 +268,10 @@ namespace InscripcionMaterias.Controllers
                     {
                         IdMateria = m.Materia.Id,
                         NombreMateria = m.Materia.Nombre,
-                        Aprobado = false // Puedes ajustarlo si ya hay información previa
+                        Aprobado = _context.ResultadoCicloAcademicos
+        .Any(rc => rc.IdAlumno == g.Key.Id && rc.IdMateria == m.Materia.Id && rc.Aprobado)
                     }).ToList()
+
                 })
                 .ToListAsync();
 
