@@ -199,7 +199,6 @@ namespace InscripcionMaterias.Controllers
         }
 
 
-        //funcionalidad para cerrar ciclo academico.
         public async Task<IActionResult> CerrarCiclo()
         {
             var model = new FiltroCierreCicloViewModel
@@ -235,9 +234,6 @@ namespace InscripcionMaterias.Controllers
             return View(model);
         }
 
-
-
-        //accion post para guardar el cierre de ciclo.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CerrarCiclo(FiltroCierreCicloViewModel model)
@@ -249,7 +245,8 @@ namespace InscripcionMaterias.Controllers
                 return View(model);
             }
 
-            var alumnos = await _context.InscripcionAlumnos
+            // 1. Obtener los datos necesarios
+            var alumnosRaw = await _context.InscripcionAlumnos
                 .Where(ia =>
                     ia.IdBloqueHorarioMateriaNavigation.IdInscripcionNavigation.IdPensum == model.IdPensum &&
                     ia.IdBloqueHorarioMateriaNavigation.IdInscripcionNavigation.CicloAcademico == model.CicloAcademico &&
@@ -259,19 +256,32 @@ namespace InscripcionMaterias.Controllers
                     Alumno = ia.IdAlumnoNavigation,
                     Materia = ia.IdBloqueHorarioMateriaNavigation.IdMateriaNavigation
                 })
+                .ToListAsync();
+
+            // 2. Obtener resultados de cierre ya guardados
+            var resultadosGuardados = await _context.ResultadoCicloAcademicos.ToListAsync();
+
+            // 3. Agrupar y mapear resultados
+            var alumnos = alumnosRaw
                 .GroupBy(x => x.Alumno)
                 .Select(g => new CierreCicloViewModel
                 {
                     IdAlumno = g.Key.Id,
                     NombreAlumno = g.Key.Nombres + " " + g.Key.Apellidos,
-                    Materias = g.Select(m => new MateriaCierreVM
+                    Materias = g.Select(m =>
                     {
-                        IdMateria = m.Materia.Id,
-                        NombreMateria = m.Materia.Nombre,
-                        Aprobado = false // Puedes ajustarlo si ya hay información previa
+                        var resultado = resultadosGuardados
+                            .FirstOrDefault(r => r.IdAlumno == g.Key.Id && r.IdMateria == m.Materia.Id);
+
+                        return new MateriaCierreVM
+                        {
+                            IdMateria = m.Materia.Id,
+                            NombreMateria = m.Materia.Nombre,
+                            Aprobado = resultado?.Aprobado // true, false o null
+                        };
                     }).ToList()
                 })
-                .ToListAsync();
+                .ToList();
 
             model.Resultados = alumnos;
             await PoblarSelects(model);
@@ -286,18 +296,30 @@ namespace InscripcionMaterias.Controllers
                 return BadRequest("Datos inválidos.");
             }
 
+            // Obtener todos los resultados ya guardados para evitar duplicados
+            var resultadosExistentes = await _context.ResultadoCicloAcademicos
+                .ToListAsync();
+
             foreach (var alumno in input.Resultados)
             {
-                foreach (var idMateria in alumno.MateriasAprobadas)
+                foreach (var materia in alumno.Materias)
                 {
-                    var nuevoResultado = new ResultadoCicloAcademico
-                    {
-                        IdAlumno = alumno.IdAlumno,
-                        IdMateria = idMateria,
-                        Aprobado = true // Siempre se guarda como aprobado porque fueron seleccionadas
-                    };
+                    // Verificar si ya existe el registro
+                    bool yaExiste = resultadosExistentes
+                        .Any(r => r.IdAlumno == alumno.IdAlumno &&
+                                  r.IdMateria == materia.IdMateria);
 
-                    _context.ResultadoCicloAcademicos.Add(nuevoResultado);
+                    if (!yaExiste)
+                    {
+                        var nuevoResultado = new ResultadoCicloAcademico
+                        {
+                            IdAlumno = alumno.IdAlumno,
+                            IdMateria = materia.IdMateria,
+                            Aprobado = materia.Aprobado
+                        };
+
+                        _context.ResultadoCicloAcademicos.Add(nuevoResultado);
+                    }
                 }
             }
 
