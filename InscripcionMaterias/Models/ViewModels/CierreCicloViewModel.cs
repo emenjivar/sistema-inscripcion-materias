@@ -12,7 +12,7 @@
     {
         public int IdMateria { get; set; }
         public string NombreMateria { get; set; } = string.Empty;
-        public bool Aprobado { get; set; }
+        public bool? Aprobado { get; set; }
     }
 
 }
