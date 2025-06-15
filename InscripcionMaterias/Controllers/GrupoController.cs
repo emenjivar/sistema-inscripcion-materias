@@ -54,7 +54,7 @@ namespace InscripcionMaterias.Controllers
                 Codigo = grupo.Codigo
             };
 
-            return View("FormularioGrupo", viewModel); // Usaremos la misma vista para crear y editar
+            return View("FormularioGrupo", viewModel); // Usarla misma vista para crear y editar
         }
 
         // POST: Grupo/Guardar (para Crear y Editar)
@@ -96,7 +96,7 @@ namespace InscripcionMaterias.Controllers
             return View("FormularioGrupo", model);
         }
 
-        // POST: Grupo/Eliminar/5
+        // POST: Grupo/Eliminar/
         [HttpPost, ActionName("Eliminar")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EliminarConfirmado(int id)
@@ -108,11 +108,9 @@ namespace InscripcionMaterias.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Advertencia: Considera si el grupo está asociado a inscripciones o bloques antes de eliminarlo.
-            // Si está asociado, esto podría causar un error de restricción de clave externa.
-            // Es buena práctica verificar o manejar esta excepción, o implementar eliminación en cascada si es apropiado.
-
-            _context.GrupoClases.Remove(grupo); // Corrección: Usar _context.GrupoClases
+           
+           
+            _context.GrupoClases.Remove(grupo); 
             await _context.SaveChangesAsync();
             TempData["SuccessMessage"] = "Grupo eliminado exitosamente.";
             return RedirectToAction(nameof(Index));
@@ -137,7 +135,7 @@ namespace InscripcionMaterias.Controllers
                 var grupo = new GrupoClase
                 {
                     Codigo = model.Codigo
-                    // Nombre y Capacidad no se incluyen según tu decisión actual
+                    
                 };
 
                 // Verificar si el código ya existe

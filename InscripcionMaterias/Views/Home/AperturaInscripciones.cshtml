@@ -173,7 +173,7 @@
 
 @section Scripts {
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> @* Asegúrate que jQuery esté cargado *@
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> 
 
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
@@ -212,8 +212,8 @@
                         $('#HoraFinString').val('');
                         $('#IdGrupoSeleccionado').val('');
 
-                        // Puedes agregar aquí un mensaje de éxito visual (ej. un "toast" de Bootstrap)
-                        // Por ahora, el mensaje general de TempData del controlador ya se muestra.
+                        
+                        
                     },
                     error: function (xhr, status, error) {
                         // Si hay un error en la solicitud AJAX
@@ -224,7 +224,7 @@
                 //} // Aquí cierra la llave comentada del `if ($(this).valid())`
             });
 
-            // --- INICIO DE CÓDIGO PARA EL MODAL DE GRUPO ---
+            // ---  CÓDIGO PARA EL MODAL DE GRUPO ---
 
             // Manejar el clic del botón "Nuevo" para abrir el modal de grupo
             $('#btnNuevoGrupoModal').on('click', function () {
@@ -290,7 +290,7 @@
 
                             // Recargar el dropdown de Grupos con el nuevo grupo
                             $.ajax({
-                                url: '@Url.Action("GetGruposAsSelectList", "Inscripcion")', // Asume que tienes esta acción o crea una similar en InscripcionController
+                                url: '@Url.Action("GetGruposAsSelectList", "Inscripcion")', 
                                 type: 'GET',
                                 success: function (grupos) {
                                     var selectGrupo = $('#IdGrupoSeleccionado');
@@ -306,7 +306,7 @@
                             });
 
                         } else {
-                            // Si el servidor devolvió errores de validación (ej. código duplicado)
+                            
                             // La respuesta 'response' contendrá el HTML del formulario con los errores
                             $('#modalBodyCrearGrupo').html(response); // Inyecta el formulario con errores
                             // Revalidar el formulario después de cargar el contenido con errores
@@ -328,8 +328,8 @@
                     }
                 });
             });
-            // --- FIN DE CÓDIGO PARA EL MODAL DE GRUPO ---
+            // ---CÓDIGO PARA EL MODAL DE GRUPO ---
 
-        }); // <--- Cierra el $(document).ready(function() {
+        }); 
     </script>
 }

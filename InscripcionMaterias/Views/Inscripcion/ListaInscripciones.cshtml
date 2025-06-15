@@ -41,7 +41,7 @@
                                 <th>Año</th>
                                 <th>Pensum (Carrera)</th>
                                 <th>Estado</th>
-                                @* <th>Fecha de Creación</th> ELIMINADO: Tu entidad Inscripcion no tiene FechaCreacion *@
+                              
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -54,16 +54,12 @@
                                     <td>@inscripcion.Anio</td>
                                     <td>@inscripcion.CarreraPensum</td>
                                     <td>@inscripcion.Estado</td>
-                                    @* <td>@inscripcion.FechaCreacion.ToShortDateString()</td> ELIMINADO: Tu entidad Inscripcion no tiene FechaCreacion *@
+                                    
                                     <td>
                                         <a asp-action="Index" asp-controller="Inscripcion" asp-route-idInscripcion="@inscripcion.Id" >
                                             <i class="fa fa-edit fa-lg text-primary"></i>
                                         </a>
-                                        @* Opcional: Botón de eliminar (requiere acción Delete en el controlador y confirmación JS) *@
-                                        @* <a asp-action="EliminarInscripcion" asp-controller="Inscripcion" asp-route-id="@inscripcion.Id" class="btn btn-danger btn-sm"
-                                onclick="return confirm('¿Está seguro de que desea eliminar esta inscripción y todos sus bloques?');">
-                                <i class="bi bi-trash"></i> Eliminar
-                                </a> *@
+                                       
                                     </td>
                                 </tr>
                             }
@@ -81,6 +77,3 @@
     </div>
 </div>
 
-@section Scripts {
-    @* Puedes añadir scripts específicos aquí si los necesitas para la tabla (ej. DataTables.js) *@
-}

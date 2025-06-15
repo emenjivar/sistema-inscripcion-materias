@@ -35,9 +35,9 @@ namespace InscripcionMaterias.Controllers
                     Id = i.Id,
                     CicloAcademico = i.CicloAcademico,
                     Anio = i.Anio,
-                    CarreraPensum = i.IdPensumNavigation != null ? i.IdPensumNavigation.Carrera : "N/A", // Obtén el nombre de la carrera
+                    CarreraPensum = i.IdPensumNavigation != null ? i.IdPensumNavigation.Carrera : "N/A", // Obtie el nombre de la carrera
                     Estado = i.Estado,
-                    // FechaCreacion = i.FechaCreacion // ¡ELIMINADO! Tu entidad Inscripcion no tiene FechaCreacion
+                    
                 })
                 .OrderByDescending(i => i.Anio)
                 .ThenByDescending(i => i.CicloAcademico)
@@ -52,7 +52,7 @@ namespace InscripcionMaterias.Controllers
         // GET: Inscripcion/Index (Esta acción cargará el formulario AperturaInscripciones.cshtml)
         // La vista AperturaInscripciones.cshtml es la que realmente mostrará el formulario
         // y necesitará el SimpleInscripcionViewModel.
-        public async Task<IActionResult> Index(int? idInscripcion) // Puedes usar idInscripcion para editar
+        public async Task<IActionResult> Index(int? idInscripcion) //se us idInscripcion para editar
         {
             var viewModel = new SimpleInscripcionViewModel();
             await CargarDropdownsParaViewModel(viewModel); //carga los estados fijos
@@ -110,15 +110,12 @@ namespace InscripcionMaterias.Controllers
                 viewModel.Estado = "Consulta";
             }
 
-            // Aquí es donde decimos que la vista a renderizar es Views/Home/AperturaInscripciones.cshtml
-            // ¡Aunque esta acción está en InscripcionController, podemos apuntar a una vista en otra carpeta!
+            // Aqui se indica que la vista a renderizar es Views/Home/AperturaInscripciones.cshtml
+            
             return View("~/Views/Home/AperturaInscripciones.cshtml", viewModel);
         }
 
-        // --- Tus acciones POST (GuardarInscripcion, AgregarBloque) se mantienen igual ---
-        // Simplemente asegúrate de que, después de un POST, si rediriges, sea a la acción correcta
-        // para la vista del formulario (ej. RedirectToAction(nameof(Index), new { idInscripcion = inscripcion.Id }))
-
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GuardarInscripcion(SimpleInscripcionViewModel model)
@@ -219,7 +216,7 @@ namespace InscripcionMaterias.Controllers
                     IdInscripcion = model.IdInscripcionActual,
                     IdMateria = model.IdMateriaSeleccionada,
                     IdGrupo = model.IdGrupoSeleccionado,
-                    DiaSemana = model.DiaSemana, // El DiaSemana ya debería venir como string
+                    DiaSemana = model.DiaSemana, 
                     HoraInicio = horaInicio,
                     HoraFin = horaFin
                 };
@@ -243,11 +240,11 @@ namespace InscripcionMaterias.Controllers
                     await CargarBloquesEnTabla(model, model.IdInscripcionActual);
                 }
                 TempData["ErrorMessage"] = "Error al agregar el bloque de clase. Revise los campos.";
-                return PartialView("_BloquesDeClaseTabla", model); // O View("~/Views/Home/AperturaInscripciones.cshtml", model); si quieres recargar toda la página
+                return PartialView("_BloquesDeClaseTabla", model); 
             }
         }
 
-        // Helper para cargar la tabla de bloques (se mantiene igual)
+ 
         private async Task CargarBloquesEnTabla(SimpleInscripcionViewModel viewModel, int idInscripcion)
         {
             viewModel.BloquesEnTabla.Clear();
@@ -268,7 +265,7 @@ namespace InscripcionMaterias.Controllers
             }
         }
 
-        // Helper para recargar dropdowns (se mantiene igual)
+        // Helper para recargar dropdowns
         private async Task CargarDropdownsParaViewModel(SimpleInscripcionViewModel viewModel)
         {
             viewModel.ListaPensums = await _context.Pensums
@@ -284,7 +281,7 @@ namespace InscripcionMaterias.Controllers
             viewModel.ListaEstados = new List<SelectListItem>
             {
                 new SelectListItem { Value = "Consulta", Text = "Consulta" },
-                new SelectListItem { Value = "Inscripcion", Text = "Inscripción" }, // Puedes ajustar el "Text" para mostrar
+                new SelectListItem { Value = "Inscripcion", Text = "Inscripción" }, 
                 new SelectListItem { Value = "Cerrado", Text = "Cerrado" }
             };
 
@@ -306,7 +303,6 @@ namespace InscripcionMaterias.Controllers
         [HttpGet]
         public async Task<JsonResult> GetGruposAsSelectList()
         {
-            // Coloca el breakpoint aquí:
             var grupos = await _context.GrupoClases
                                        .OrderBy(g => g.Codigo)
                                        .Select(g => new SelectListItem
