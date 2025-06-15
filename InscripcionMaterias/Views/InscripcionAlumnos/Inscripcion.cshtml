@@ -7,7 +7,7 @@
 <div>
     <strong>Alumno:</strong> @Model.NombreAlumno<br />
     <strong>Carnet:</strong> @Model.Carnet<br />
-    <strong>Ciclo:</strong> I, @Model.Anio
+    <strong>Ciclo:</strong> @Model.CicloAcademico - @Model.Anio
 </div>
 
 <form asp-action="GuardarInscripcion" method="post" onsubmit="return validarFormulario();">

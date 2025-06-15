@@ -131,6 +131,7 @@ public class ReporteController : Controller
     [HttpGet]
     public async Task<IActionResult> GenerarReporteInscripcion(int id)
     {
+        int? idAlumno = HttpContext.Session.GetInt32("IdAlumno");
         try
         {
             // Obtener las inscripciones del alumno en esta inscripción específica
@@ -140,7 +141,7 @@ public class ReporteController : Controller
                     .ThenInclude(bhm => bhm.IdMateriaNavigation)
                 .Include(ia => ia.IdBloqueHorarioMateriaNavigation)
                     .ThenInclude(bhm => bhm.IdGrupoNavigation)
-                .Where(ia => ia.IdBloqueHorarioMateriaNavigation.IdInscripcion == id)
+                .Where(ia => ia.IdBloqueHorarioMateriaNavigation.IdInscripcion == id && ia.IdAlumno == idAlumno)
                 .ToListAsync();
 
             if (!inscripcionesAlumno.Any())
