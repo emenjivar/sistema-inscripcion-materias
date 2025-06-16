@@ -10,7 +10,7 @@ namespace InscripcionMaterias.Models.ViewModels
         public int Anio { get; set; }
         public string CarreraPensum { get; set; } // Para mostrar el nombre del pensum/carrera
         public string Estado { get; set; }
-       // public DateTime FechaCreacion { get; set; } // Asumiendo que tienes una fecha de creación
+       
     }
 
     public class ListaInscripcionesViewModel

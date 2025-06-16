@@ -38,8 +38,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Código</th>
-                            @* <th>Nombre</th> - ELIMINADO *@
-                            @* <th>Capacidad</th> - ELIMINADO *@
+                            
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -49,8 +48,7 @@
                             <tr>
                                 <td>@grupo.Id</td>
                                 <td>@grupo.Codigo</td>
-                                @* <td>@grupo.Nombre</td> - ELIMINADO *@
-                                @* <td>@grupo.Capacidad</td> - ELIMINADO *@
+                                
                                 <td>
                                     <a asp-action="Editar" asp-route-id="@grupo.Id" >
                                         <i class="fa fa-edit fa-lg text-primary"></i>
@@ -76,7 +74,3 @@
         </div>
     }
 </div>
-
-@section Scripts {
-    @* Puedes añadir scripts específicos aquí si los necesitas (ej. DataTables.js) *@
-}
